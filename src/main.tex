@@ -1,5 +1,5 @@
 \documentclass{UoYCSproject}
-\addbibresource{dummyBib.bib}
+%\addbibresource{dummyBib.bib}
 \author{Lilian Blot}
 \title{An example of a project reports in \LaTeXe\ with the   \textsf{UoYCSproject} class}
 \date{Version 3.0, 2020-November}
@@ -10,7 +10,7 @@
 
 \acknowledgements{
     I would like to thank my goldfish for all the help it gave me
-    writing this document.
+    writing this docume
 
     As usual, my boss was an inspiring source of sagacious advice.
 }
@@ -26,26 +26,121 @@
 %\lstlistoflistings
 
 \chapter{Introduction}
-\label{cha:Introduction}
+\label{ch:introduction}
 Introduction
-Late delivery of software projects remains an ever present challenge, often attributed to the inherent uncertainties and complexities associated with development. There are multiple factors that affect the delivery of a software project, however it is clear that project planning plays a role in this [45].
-Agile Software development is a type of iterative planning method where a project is broken up into smaller “user stories” or tickets, each defining a specific task or part of a project that must be completed. Generally each ticket has an estimate attached to it, defining the time or effort it will take to finish. Some projects use time-based estimates like hours or days to estimate tickets, others teams assign “Story Points”, an abstract unit of perceived complexity, risk, and effort involved in implementing a specific feature or piece of functionality [Book]. Estimates enable a Team leader to plan what tickets can be completed in a “sprint”, or “iteration”, usually a period of 2-4 weeks, based on how many points they think the team will be able to do [Agile planning and development methods]. The process for estimating tickets can be time consuming, the faster that a ticket is estimated, the faster it can be planned for completion. Furthermore, the more accurate an estimation is, the more likely it is that a release, which in agile, is a collection of tickets associated with features or bug-fixes in a release, can be delivered on time, as the work will have been planned accordingly.
-When a ticket is created, it is placed into a to-do list of tickets called a “backlog”. Tickets in the backlog are then estimated for their effort or time to complete, and are then ordered according to multiple factors including this estimate and the priority of the ticket. Generally in projects, work cannot be carried out on a ticket until it has been estimated. This emphasises the importance of both the speed and accuracy of ticket estimation in the successful management of projects.
+Late delivery of software projects remains an ever present challenge, often attributed to the inherent uncertainties and complexities associated with development.
+There are multiple factors that affect the delivery of a software project, however it is clear that project planning plays a role in this [45]. \par
+Agile Software development is a type of iterative planning method where a project is broken up into smaller “user stories” or tickets, each defining a specific task or part of a project that must be completed.
+Generally each ticket has an estimate attached to it, defining the time or effort it will take to finish.
+Some projects use time-based estimates like hours or days to estimate tickets, others teams assign “Story Points”, an abstract unit of perceived complexity, risk, and effort involved in implementing a specific feature or piece of functionality [Book].
+Estimates enable a Team leader to plan what tickets can be completed in a “sprint”, or “iteration”, usually a period of 2-4 weeks, based on how many points they think the team will be able to do [Agile planning and development methods].
+The process for estimating tickets can be time consuming, the faster that a ticket is estimated, the faster it can be planned for completion.
+Furthermore, the more accurate an estimation is, the more likely it is that a release, which in agile, is a collection of tickets associated with features or bug-fixes in a release, can be delivered on time, as the work will have been planned accordingly. \par
+
+When a ticket is created, it is placed into a to-do list of tickets called a “backlog”.
+Tickets in the backlog are then estimated for their effort or time to complete, and are then ordered according to multiple factors including this estimate and the priority of the ticket.
+Generally in projects, work cannot be carried out on a ticket until it has been estimated.
+This emphasises the importance of both the speed and accuracy of ticket estimation in the successful management of projects.
 Automated ticket estimation may enable the correct prioritisation of tickets before any estimation activities are carried out by the team or members of the team.
 By using a large language model, the information provided in a tickets title and description can be used as features in a classification neural network.
+The model proposed in this paper is intended to participate in the estimation process rather than perform the estimation as the source of truth.
+This is because incorrect estimates can have severe consequences on project planning, a model would need to be extremely accurate in order to be trusted to estimate the ticket correctly.
+In practice the model participation can happen in multiple ways.
+The model may act as an advisor for the “expert” who is estimating tickets.
+Alternatively the model may participate in agile poker sessions with members of a project, whereby engineers play a “game” where everyone chooses a card that equates to the value that they want to estimate, then discuss and re-estimate until a consensus is reached [15]. \par
+
+In order to simplify the problem, the model proposed in this paper will be able to classify tickets into 3 categories, “Small”, “Medium” and “Large”, whereby a ticket is classified as “Small” if it is estimated to take less than 2 days, “Medium” if it is estimated to take between 0 and 3 hours, medium if its 3-8 hours, and “Large” if it is estimated to take more than 8 hours.
+When inspecting data from a project in a large automotive company, who estimate using minutes and hours, it was found that the accuracy of ticket estimation was 72\% when usimg the above categories.
+Furthermore, I am aiming to ensure that the model takes less than 4 hours to train, and less than 1 second to classify a ticket once trained.
+This is so that the model can be used in real time, and can be retrained on a regular basis to ensure that it is up to date with the latest data, ensuring continuous learning but also reduce costs. \par
+
+\chapter{Literature Review}
+\label{ch:literature-review}
+This section discusses the current research into methods of ticket estimation, including with Deep learning, as well as in the broader field of Natural Language Processing.
+It summarises and analyses existing work as well as highlighting unknowns within the topics.
+
+It is broken down into 3 sub-sections.
+First “Estimation in Software Engineering Projects” focuses on research about effort and time estimation as a concept, as well as research into techniques for doing estimations.
+The next sub-section focuses on relevant research into Large Language Models and Natural Language Processing.
+Lastly, the “Agile Estimation with Deep Learning” looks at Deep learning models specifically for classification of text, particularly of Agile Tickets for estimation.
+
+\section[effort-estimation]{Effort Estimation}
+\label{sec:effort-estimation}
+Current research into estimation in agile projects mostly centres around how estimations are produced and what scale they use. There are many methods for estimating tickets or projects that have been examined in academic research. They can be sorted into two main categories, Judgement-based approaches and Model-based approaches (discussed below) [37].
+\subsection{Judgement-based approaches}
+\label{subsec:judgement-based-approaches}
+
+Judgement-based approaches rely on the knowledge of experts about the field or project in question, who can make an estimate based on their experiences and knowledge on how much effort a ticket will take to complete.
+The simplest judgement based approach, expert judgement, is a single expert estimating the ticket by themselves, however group estimation techniques such as Planning poker, whereby team members play a “game” to reach an agreement on the Story Point estimate of a tickets are also popular. Research has been done to examine the accuracy of these techniques by looking at the result of the same ticket estimated with both, showing that planning poker is more accurate that individual expert estimates [38, 39]. Other
+A survey was performed in 2015 to determine the state of the practice of Effort Estimation of Agile Software
+Development. The research surveyed 60 users of agile practices across 16 different countries. It established that 63\% of participants use Planning poker to perform estimations followed by 47\% used analogy (whereby parallels are drawn from previous stories and they are used to decide an estimate for new stories [source for this]) and expert judgment (38\%)[48].
+
+\subsection{Model-based approaches}
+\label{subsec:model-based-approaches}
+Model Based Effort Estimation
+In the last 30 years, many Algorithmic-Based Approaches have been proposed to automate the estimation of tickets
+and projects.
+In 1981, the Constructive Cost Estimation Model ($COCOMO$) model was proposed by DR. Berry Boehm [41].
+The basic $COCOMO$ model defines the effort required to complete a project to be $a^2 \times (KLOC)a^2pm$.
+Where $KLOC$ is kilo lines of code, $a$ is a constant depending on the type of project and is expressed in person months ($pm$), the detailed version adds effort multipliers for each phase of a project, splits the effort estimation into subsystems and adds various extra multipliers to improve accuracy.
+Although this model can achieve a mean average accuracy of 91\% for effort estimation on projects (need to check the validity of this, check for another source, this seems very high) [43], the model requires a lot of input information, including Lines of Code, number of files, number of external interfaces and developer experience with the technical stack.
+COCOMO, as well as other model based estimators like SLIM[51] and regression models are used much less in agile software development than previously in non-agile development methods [48, 40] due to the estimations being for tickets rather than for entire projects, where the attributes needed are more readily available and relevant.
+As in a ticket rather than in a project, the main information is the textual description, with the shift towards agile software development, focus has shifted towards researching how we can leverage Natural Language Processing in order to estimate story points.
+
+\section{Large Language Models}
+\label{sec:large-language-models}
+Large Language Models (LLM) are a type of artificial intelligence model that is designed to understand, generate
+or manipulate human language.
+These models are characterized by their size and complexity, often consisting of millions or even billions of parameters.
+Large language models are built on advanced deep learning architectures and are typically pre-trained on massive
+amounts of textual data (corpus) before being fine-tuned for specific tasks. \par
+
+In 2017, transformer based architecture was introduced by Vaswani et al. [Transformer].
+It has become the foundational model for a variety of natural language processing (NLP) tasks, including text classification, question answering, summarization, and translation.
+The transformer based architecture is a type of neural network architecture that is designed to process sequential data, such as text, and is based on the concept of attention.
+The core innovation of this architecture is the introduction of 'self-attention'.
+Self-attention allows a model to weigh the importance of different words in a sequence when processing each word, rather than relying on a fixed-length context window, like in recurrent neural networks (RNNs).
+This means that a model can capture long-range dependencies effectively.
+The self-attention mechanism also allows the model to process all words in a sequence simultaneously, rather than sequentially, therefore improving the training speed as it allows parallelization.
+\par
+In 2018, the Bidirectional Encoder Representations from Transformers (BERT) model was introduced by Devlin et al.
+[BERT]. BERT is a large language model that uses the transformer architecture and is pre-trained on a large corpus of
+unlabelled
+text, including the entire Wikipedia corpus and a large book corpus, totaling 3,300M words.
+BERT is considered a landmark in the development of large language models, for several reasons.
+An important difference betweeen BERT and previous language models is that it is bidirectional, meaning that it can
+use the context of both the left and right side of a word when processing it, rather than just the left side like
+previous models.
+This enables it to capture richer contextual information compared to previous unidirectional models.
+
+
+An important part of Large language models is Tokenization, which is the process of splitting a string into a list of
+tokens.
+A token can be a word, sentence, paragraph or even a single character.
+Tokenization is performed by a Tokenizer, which is a class that defines a vocabulary and methods for encoding.
+The vocabulary is a list of known tokens, for example words from a dictionary or in a particular corpus.
+The Tokenizer can then encode a string by breaking it up into tokens and replacing each token with its corresponding integer value from the vocabulary.
+One popular tokenizer is WordPiece, which was introduced in 2016 by Google as the tokenization method for BERT [BERT].
+WordPiece is a subword tokenizer, meaning that it breaks words down into smaller parts, or subwords.
+WordPiece is effective in handling rare or unseen words because it can represent them as a combination of more common subword units.
+This property is especially valuable for tokenizing text on a niche topic or with unusual vocabulary. \par
+
+Byte Pair Encoding (BPE) is another popular tokenizer, it was first introduced by Philip Gage in the context of text compression in 1994 [BPE].
+It is a simple form of dictionary encoding, which iteratively replaces the most frequent pair of bytes in a sequence with a single, unused byte.
+Whilst it was an effective text compression algorithm, it was later recognized for its utility in natural language processing (NLP),
+and has since been used in many NLP models, including transformer-based models like GPT (Generative Pre-trained Transformer)[GPT].
 
 
 \chapter{Background}
-\label{cha:background}
+\label{ch:background}
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
 quis quam at nisi iaculis aliquet vel et quam. Aliquam er
 
 \chapter{Methodology}
-\label{cha:methodology}
+\label{ch:methodology}
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
 quis quam at nisi iaculis aliquet vel et quam. Aliquam era
 
-    5hiw i3fe
 \printbibliography
 
 \end{document}
