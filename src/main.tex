@@ -18,10 +18,10 @@
 % Document
 
 \begin{document}
-    \pagenumbering{roman}
-    \maketitle
-    \listoffigures
-    \listoftables
+\pagenumbering{arabic}
+\maketitle
+\listoffigures
+\listoftables
 %\renewcommand*{\lstlistlistingname}{List of Listings}
 %\lstlistoflistings
 
@@ -92,10 +92,9 @@ As in a ticket rather than in a project, the main information is the textual des
 Large Language Models (LLM) are a type of artificial intelligence model that is designed to understand, generate
 or manipulate human language.
 These models are characterized by their size and complexity, often consisting of millions or even billions of parameters.
-Large language models are built on advanced deep learning architectures and are typically pre-trained on massive
-amounts of textual data (corpus) before being fine-tuned for specific tasks. \par
+Large language models are built on advanced deep learning architectures and are typically pre-trained on massive amounts of textual data (corpus) before being fine-tuned for specific tasks. \par
 
-In 2017, transformer based architecture was introduced by Vaswani et al. [Transformer].
+In 2017, transformer based architecture was introduced in a model proposed by Vaswani et al [Transformer].
 It has become the foundational model for a variety of natural language processing (NLP) tasks, including text classification, question answering, summarization, and translation.
 The transformer based architecture is a type of neural network architecture that is designed to process sequential data, such as text, and is based on the concept of attention.
 The core innovation of this architecture is the introduction of 'self-attention'.
@@ -103,17 +102,28 @@ Self-attention allows a model to weigh the importance of different words in a se
 This means that a model can capture long-range dependencies effectively.
 The self-attention mechanism also allows the model to process all words in a sequence simultaneously, rather than sequentially, therefore improving the training speed as it allows parallelization.
 \par
-In 2018, the Bidirectional Encoder Representations from Transformers (BERT) model was introduced by Devlin et al.
-[BERT]. BERT is a large language model that uses the transformer architecture and is pre-trained on a large corpus of
-unlabelled
-text, including the entire Wikipedia corpus and a large book corpus, totaling 3,300M words.
-BERT is considered a landmark in the development of large language models, for several reasons.
-An important difference betweeen BERT and previous language models is that it is bidirectional, meaning that it can
-use the context of both the left and right side of a word when processing it, rather than just the left side like
-previous models.
-This enables it to capture richer contextual information compared to previous unidirectional models.
+In June 2018, Generative Pre-Trained Transformers (GPT) was introduced by OpenAI in the paper "Improving Language Understanding by Generative Pre-Training".
+GPT follows an autoregressive approach during both pre-training and fine-tuning, this means that the model generates text sequentially, predicting the next word in a sequence based on the preceding context.
+This allows GPT to capture complex dependencies and relationships in language, however GPT only looks at the context of previous words, left-to-right rather than bidirectionally like later models.
+
+In October 2018, the Bidirectional Encoder Representations from Transformers (BERT) model was introduced by Devlin et al.
+[BERT].
+BERT is a large language model that uses the transformer architecture and is pre-trained on a large corpus of unlabelled text, including the entire Wikipedia corpus and a large book corpus, totaling 3,300M words.
+It is trained using a masked language model (MLM) objective, where random tokens in a sequence are masked, and the model is trained to predict those masked tokens.
+BERT is considered a landmark in the development of large language models, for multiple reasons.
+An important difference between BERT and previous language models is that it is bidirectional, meaning that it can
+use the context of both the left and right side of a word when processing it, enabling the model to capture richer contextual information compared to previous unidirectional models.
+At time of release, BERT outperformed all other Large Language Models on the General Language Understanding Evaluation (GLUE Benchmark), a set of tasks that are designed to measure the performance of models that aim to understand language.
+An average of 79.6\% on the $GLUE$ benchmark tasks was achieved by the $BERT_{base}$, 4.4\% higher than the previous highest score achieved by OpenAI's GPT.
+
+The release of BERT and GPT in 2018 was followed by the proposal of many new models based on the transformer architecture in 2019.
+XLNet was introduced by researchers at Google and Carnegie Mellon University, it is another transformer-based language model that extends the bidirectional context understanding of BERT while addressing some of its limitations.
+XLNet uses a permutation language model (PLM) objective.
+Instead of masking random tokens, XLNet considers all tokens in the sequence as potential candidates for prediction.
+This means that the model is trained to predict the probability distribution over all possible permutations of the sequence.
 
 
+% This part is maybe not neccessary?
 An important part of Large language models is Tokenization, which is the process of splitting a string into a list of
 tokens.
 A token can be a word, sentence, paragraph or even a single character.
@@ -121,14 +131,22 @@ Tokenization is performed by a Tokenizer, which is a class that defines a vocabu
 The vocabulary is a list of known tokens, for example words from a dictionary or in a particular corpus.
 The Tokenizer can then encode a string by breaking it up into tokens and replacing each token with its corresponding integer value from the vocabulary.
 One popular tokenizer is WordPiece, which was introduced in 2016 by Google as the tokenization method for BERT [BERT].
-WordPiece is a subword tokenizer, meaning that it breaks words down into smaller parts, or subwords.
-WordPiece is effective in handling rare or unseen words because it can represent them as a combination of more common subword units.
+WordPiece is a sub-word tokenizer, meaning that it breaks words down into smaller parts, or sub-words.
+WordPiece is effective in handling rare or unseen words because it can represent them as a combination of more common sub-word units.
 This property is especially valuable for tokenizing text on a niche topic or with unusual vocabulary. \par
 
 Byte Pair Encoding (BPE) is another popular tokenizer, it was first introduced by Philip Gage in the context of text compression in 1994 [BPE].
 It is a simple form of dictionary encoding, which iteratively replaces the most frequent pair of bytes in a sequence with a single, unused byte.
 Whilst it was an effective text compression algorithm, it was later recognized for its utility in natural language processing (NLP),
-and has since been used in many NLP models, including transformer-based models like GPT (Generative Pre-trained Transformer)[GPT].
+and has since been used in many NLP models, including transformer-based models like GPT.
+
+\section{Ticket classification with deep learning}
+\label{sec:estimation-with-deep-learning}
+
+In 2018, Choetkiertikul et al.
+introduced a significant contribution to the field of software engineering with their paper titled 'A deep learning model for estimating story points.' This research, conducted at the University of Wollongong (Australia), presents a novel approach to estimating story points in tickets.
+
+
 
 
 \chapter{Background}
