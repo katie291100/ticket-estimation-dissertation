@@ -1,9 +1,11 @@
 \documentclass{UoYCSproject}
+\graphicspath{ {./figures/} }
+
 %\addbibresource{dummyBib.bib}
-\author{Lilian Blot}
-\title{An example of a project reports in \LaTeXe\ with the   \textsf{UoYCSproject} class}
-\date{Version 3.0, 2020-November}
-\supervisor{Jeremy L. Jacob}
+\author{Katie Maison}
+\title{Agile ticket estimation with BERT}
+\date{2024}
+\supervisor{Peter Nightingale}
 \BSc
 
 \dedication{To my son}
@@ -18,7 +20,9 @@
 % Document
 
 \begin{document}
-\pagenumbering{arabic}
+    \pagenumbering{roman}
+\setcounter{page}{1}
+
 \maketitle
 \listoffigures
 \listoftables
@@ -27,12 +31,17 @@
 
 \chapter{Introduction}
 \label{ch:introduction}
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
 Introduction
 Late delivery of software projects remains an ever present challenge, often attributed to the inherent uncertainties and complexities associated with development.
 There are multiple factors that affect the delivery of a software project, however it is clear that project planning plays a role in this [45]. \par
 Agile Software development is a type of iterative planning method where a project is broken up into smaller “user stories” or tickets, each defining a specific task or part of a project that must be completed.
 Generally each ticket has an estimate attached to it, defining the time or effort it will take to finish.
 Some projects use time-based estimates like hours or days to estimate tickets, others teams assign “Story Points”, an abstract unit of perceived complexity, risk, and effort involved in implementing a specific feature or piece of functionality [Book].
+For example, a Story Point value of 1, may be equated to 2 hours work or less, 8 around 22 hours of active work on a ticket or 11 hours for 2 people.
+It is common for the Story Point scale used to be an adjusted fibbonaci, of 1, 2, 3, 5, 8, 13, 15, 20, 40, 100.
 Estimates enable a Team leader to plan what tickets can be completed in a “sprint”, or “iteration”, usually a period of 2-4 weeks, based on how many points they think the team will be able to do [Agile planning and development methods].
 The process for estimating tickets can be time consuming, the faster that a ticket is estimated, the faster it can be planned for completion.
 Furthermore, the more accurate an estimation is, the more likely it is that a release, which in agile, is a collection of tickets associated with features or bug-fixes in a release, can be delivered on time, as the work will have been planned accordingly. \par
@@ -64,16 +73,19 @@ First “Estimation in Software Engineering Projects” focuses on research abou
 The next sub-section focuses on relevant research into Large Language Models and Natural Language Processing.
 Lastly, the “Agile Estimation with Deep Learning” looks at Deep learning models specifically for classification of text, particularly of Agile Tickets for estimation.
 
-\section[effort-estimation]{Effort Estimation}
+\section[Effort Estimation]{Effort Estimation}
 \label{sec:effort-estimation}
-Current research into estimation in agile projects mostly centres around how estimations are produced and what scale they use. There are many methods for estimating tickets or projects that have been examined in academic research. They can be sorted into two main categories, Judgement-based approaches and Model-based approaches (discussed below) [37].
+Current research into estimation in agile projects mostly centres around how estimations are produced and what scale they use.
+There are many methods for estimating tickets or projects that have been examined in academic research.
+They can be sorted into two main categories, Judgement-based approaches and Model-based approaches (discussed below) [37].
 \subsection{Judgement-based approaches}
 \label{subsec:judgement-based-approaches}
 
 Judgement-based approaches rely on the knowledge of experts about the field or project in question, who can make an estimate based on their experiences and knowledge on how much effort a ticket will take to complete.
-The simplest judgement based approach, expert judgement, is a single expert estimating the ticket by themselves, however group estimation techniques such as Planning poker, whereby team members play a “game” to reach an agreement on the Story Point estimate of a tickets are also popular. Research has been done to examine the accuracy of these techniques by looking at the result of the same ticket estimated with both, showing that planning poker is more accurate that individual expert estimates [38, 39]. Other
-A survey was performed in 2015 to determine the state of the practice of Effort Estimation of Agile Software
-Development. The research surveyed 60 users of agile practices across 16 different countries. It established that 63\% of participants use Planning poker to perform estimations followed by 47\% used analogy (whereby parallels are drawn from previous stories and they are used to decide an estimate for new stories [source for this]) and expert judgment (38\%)[48].
+The simplest judgement based approach, expert judgement, is a single expert estimating the ticket by themselves, however group estimation techniques such as Planning poker, whereby team members play a “game” to reach an agreement on the Story Point estimate of a tickets are also popular.
+Research has been done to examine the accuracy of these techniques by looking at the result of the same ticket estimated with both, showing that planning poker is more accurate that individual expert estimates [38, 39]. Other
+A survey was performed in 2015 to determine the state of the practice of Effort Estimation of Agile Software Development.
+The research surveyed 60 users of agile practices across 16 different countries. It established that 63\% of participants use Planning poker to perform estimations followed by 47\% used analogy (whereby parallels are drawn from previous stories and they are used to decide an estimate for new stories [source for this]) and expert judgment (38\%)[48].
 
 \subsection{Model-based approaches}
 \label{subsec:model-based-approaches}
@@ -144,20 +156,72 @@ and has since been used in many NLP models, including transformer-based models l
 \label{sec:estimation-with-deep-learning}
 
 In 2018, Choetkiertikul et al.
-introduced a significant contribution to the field of software engineering with their paper titled 'A deep learning model for estimating story points.' This research, conducted at the University of Wollongong (Australia), presents a novel approach to estimating story points in tickets.
+introduced a significant contribution to the field of software engineering with their paper titled 'A deep learning model for estimating story points.'.
+This research, conducted at the University of Wollongong (Australia), presents a model for estimating the story point estimation of tickets (DEEP-SE) and is the most notable research paper on ticket classification with deep learning.
+The model uses long short-term memory and recurrent highway network which are both types of recurrent neural network (RNN) architectures.
+It defines the task as a regression problem and achieves a standardized accuracy of 52.66\%
+\[SA = (1-\frac{MAE}{MAE_{rguess}}) \times 100\]
+where $MAE$ is the Mean Absolute Error and $MAE_{rguess}$ is the MAE of a large number (e.g. 1000 runs) of random guesses. Such that $MAE$, defined as \[ MAE = \frac{1}{N}\sum_{i=1}^{N}|ActualSP_{i} - EstimatedSP_{i}|\] where $N$ is the number of issues used for evaluating the performance (i.e. test set), $ActualSP_i$ is the actual story point, and $EstimatedSP_i$ is the estimated story point, for the issue $i$.
+The dataset used for this model was 23,313 tickets story points, collected from 16 large open source projects.
+This dataset has since been used by other researchers including Phan et al\. who looked at the potential and possible challenges of Graph Neural Network text
+classification in story point estimation [5].
+Their proposed model achieved an accuracy as high as 80\% on some projects within the dataset when classifying tickets into 6 'buckets' of story points.
 
+However, it is clear that there is a research gap into ticket effort estimation using large language models such as BERT.
 
-
-
-\chapter{Background}
-\label{ch:background}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
-quis quam at nisi iaculis aliquet vel et quam. Aliquam er
-
-\chapter{Methodology}
+\chapter{Methodoloy}
 \label{ch:methodology}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
-quis quam at nisi iaculis aliquet vel et quam. Aliquam era
+This section introduces the proposed model for the classification of tickets.
+It covers explanation of the datasets, preprocessing, data augmentation methods and the architecture of different models that were evaluated as well as justification of the final model.
+The last subsection discusses the ethics of the problem.
+
+\section{Datasets}\label{sec:datasets}
+The datasets used to evaluate this model come from a large automotive software company, containing a total of 40,000 tickets, across 12 projects.
+Every ticket has a title, or a "Summary" that is a short description of the ticket, usually less than X characters.
+It then has a description, this a longer piece of text that explains what the aim of the ticket is. \par
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{ticket-example}
+\caption{an example ticket}
+\label{fig:figure}
+\end{figure}
+
+For the dataset in question, the word count is between 2 and 1000, as shown in figure 3.2.
+
+% word count figure %
+
+    Write about statistics of tha dataset
+% Visualisations/table of the dataset %
+% How the dataset was split up %
+
+\section{Pre-Processing}\label{sec:preprocessing}
+
+    The main features of each ticket is its summary and description.
+The description is written with Jira Markdown syntax, for example it allows formatted blocks of code to be added with the syntax {code:java} {code} and h[1-6]. formats the text following as a heading.
+In order to remove this syntax and reformat the text as plain text, a set of regex replace rules were used.
+Furthermore, blocks of code were completely removed.
+This was done because the model has a word limit and blocks of code do not provide additional context unless a model has been specifically trained on code and its syntax.\par
+
+The text string used as an input to the model is the summary prepended to the description.
+
+In
+\section{Data Augmentation}\label{sec:data-augmentation}
+
+\section{Architectures}\label{sec:architectures}
+
+\section{Ethical Considerations}\label{sec:ethical-considerations}
+
+\chapter{Experimental Settings}
+\label{ch:experimental-settings}
+
+\chapter{Results}
+\label{ch:results}
+
+\chapter{Model as a Service}
+\label{ch:model-as-a-service}
+
+\chapter{Conclusion}
+\label{ch:conclusion}
 
 \printbibliography
 
