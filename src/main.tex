@@ -169,6 +169,11 @@ Their proposed model achieved an accuracy as high as 80\% on some projects withi
 
 However, it is clear that there is a research gap into ticket effort estimation using large language models such as BERT.
 
+
+\chapter{Problem Analysis}
+\label{ch:problem-settings}
+
+
 \chapter{Methodoloy}
 \label{ch:methodology}
 This section introduces the proposed model for the classification of tickets.
@@ -190,22 +195,57 @@ For the dataset in question, the word count is between 2 and 1000, as shown in f
 
 % word count figure %
 
-    Write about statistics of tha dataset
+The dataset has two types of tickets, ones that have been estimated with a specific time and ones that have been estimated with story points.
+Ones that have been estimated with a specific time also have the "Actual time spent" logged on them.
+This is useful as it may help our model become more 'intelligent' than a person estimating them as we can use ground truth values. \par
+
+
 % Visualisations/table of the dataset %
-% How the dataset was split up %
+
 
 \section{Pre-Processing}\label{sec:preprocessing}
 
     The main features of each ticket is its summary and description.
 The description is written with Jira Markdown syntax, for example it allows formatted blocks of code to be added with the syntax {code:java} {code} and h[1-6]. formats the text following as a heading.
 In order to remove this syntax and reformat the text as plain text, a set of regex replace rules were used.
-Furthermore, blocks of code were completely removed.
-This was done because the model has a word limit and blocks of code do not provide additional context unless a model has been specifically trained on code and its syntax.\par
+These rules removed blocks of code and formatting syntax, but also has anonymised the data by removing mentions of users, for example @KatieMaison which stops the model learning to differentiate the estimation for the ticket by a user as a feature, as this may have ethical considerations. \par
 
 The text string used as an input to the model is the summary prepended to the description.
+This is because usually in a ticket, a title has the most important information in it, often containing keywords about the contents of the ticket. \par
 
-In
+In order to enable classification, an additional column $class$ was added to the dataset, where $class(ticket) \in \{0,1,2\}$, where 0 is small, 1 is medium and 2 is large.
+"Small" tickets have been defined as those that take less than 1 hour to complete and are estimated to be 0-1 Story Point in effort.
+"Medium" tickets have been defined as those that take between 1 and 5 hours, or are estimated to be between 1 and 5 story points.
+"Large" tickets are defined to take more than 5 hours to complete, or have more than 5 story points as an estimate.
+% How the dataset was split up %
+    \item "Small": if $storypoint(ticket) \in \{0,1\}$ or completion time $< 1$ hour.
+  \item "Medium": if $1 \leq storypoint(ticket) \leq 5$ or $1 \leq$ completion time $\leq 5$.
+  \item "Large": if $storypoint(ticket) > 5$ or completion time $> 5$ hours.
+
+%\begin{tabular}{|p{7cm}|p{2cm}|p{1.5cm}|p{1cm}|}
+%  \hline
+%  Ticket Description & Story Point Estimate & Time Logged & Class\\
+%  \hline
+%  As part of the AUTOSAR project, we need to implement the Controller Area Network (CAN) communication module. This module will facilitate communication between various electronic control units (ECUs) within the vehicle.
+% & 5 & N/A & 1 \\
+%    \hline
+%
+%  Row 2, Col 1 & Row 2, Col 2 & Row 2, Col 3 & c2 \\
+%  \hline
+%\end{tabular}
+
 \section{Data Augmentation}\label{sec:data-augmentation}
+    In order to increase the generalisation of the model and therefore increase accuracy, I have opted to use data augmentation to increase the number of data points and also to reduce the class imbalance in the data.
+    Back translation was tested as an augmentation technique, however upon inspecting the tickets, the meanings of the tickets were dramatically changed, for example changing the phrase "All of the tests need to pass" to "Not all of the tests need to pass". This changes the context of the ticket and may affect the model.
+    Instead, paraphrasing had better results.
+    This means that for every tickets description, there is another paraphrased version that is also used as a data point.
+    To do so, I used a pretrained model from the huggingface library, "Finetuned GhatGPT paraphraser on T5-base". [paraphraser]
+    This model is a t5 model, finetuned on a dataset of phrases and their paraphrases.
+
+
+
+    It took 10 hours to p
+
 
 \section{Architectures}\label{sec:architectures}
 
