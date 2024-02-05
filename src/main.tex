@@ -235,16 +235,16 @@ In order to enable classification, an additional column $class$ was added to the
 %\end{tabular}
 
 \section{Data Augmentation}\label{sec:data-augmentation}
-    In order to increase the generalisation of the model and therefore increase accuracy, I have opted to use data augmentation to increase the number of data points and also to reduce the class imbalance in the data.
-    Back translation was tested as an augmentation technique, however upon inspecting the tickets, the meanings of the tickets were dramatically changed, for example changing the phrase "All of the tests need to pass" to "Not all of the tests need to pass". This changes the context of the ticket and may affect the model.
-    Instead, paraphrasing had better results.
-    This means that for every tickets description, there is another paraphrased version that is also used as a data point.
-    To do so, I used a pretrained model from the huggingface library, "Finetuned GhatGPT paraphraser on T5-base". [paraphraser]
-    This model is a t5 model, finetuned on a dataset of phrases and their paraphrases.
+In order to increase the generalisation of the model and therefore increase accuracy on unseen data, I have opted to use data augmentation to increase the number of data points and also to reduce the class imbalance in the data.
+Back translation was tested as an augmentation technique, which is where a ticket is translated into a different language, and then translated back. I used the NLPAug Python library, which allows you to choose a translation model from huggingface to use to translate the text.
+However upon inspecting the tickets, there was very little change in the wording of the ticket, and the model over-fit much more quickly, reaching a very small loss and test accuracy stagnated.
+Instead, paraphrasing had better results.
+To do so, I used a pretrained model from the huggingface library, "Finetuned GhatGPT paraphraser on T5-base". [paraphraser]
+This model is a t5 model, finetuned on a dataset of phrases and their paraphrases.
 
+% Example of paraphrased sentences
 
-
-    It took 10 hours to p
+I ran the paraphraser on every ticket, which took 20 hours on an ATX200 Graphics card.
 
 
 \section{Architectures}\label{sec:architectures}
