@@ -244,10 +244,24 @@ This model is a t5 model, finetuned on a dataset of phrases and their paraphrase
 
 % Example of paraphrased sentences
 
-I ran the paraphraser on every ticket, which took 20 hours on an ATX200 Graphics card.
-
+I first used the data cleaner described previously to remove the formatting syntax, then ran the paraphraser on every ticket, which took 21 hours on an ATX200 Graphics card.\par
 
 \section{Architectures}\label{sec:architectures}
+    The architecture of the model can be described in three parts, Tokenization Layer, Transformer Layers and Classification Head.
+    These will be described sequentially in the following sections.\par
+
+\subsection[tokenization-layer]{Tokenization Layer}
+    In order to be used in a Large Language Model, textual input needs to be transformed into tokens and embeddings.
+    My model uses the BERT Tokenizer, the specific implementation of which is provided by the transformers huggingface library. \par
+
+    \begin{figure}[h]
+\includegraphics[width=\textwidth]{bert-tokenizer}
+\caption{Bert Tokenizer from the Original Bert Paper}
+\label{fig:tokenizer-figure}
+\end{figure}
+
+    The tokenizer works by splitting each tickets description $T$ into individual tokens, then converting these into a numerical value from the models vocab.
+
 
 \section{Ethical Considerations}\label{sec:ethical-considerations}
 
