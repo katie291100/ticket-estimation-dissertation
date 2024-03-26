@@ -1,5 +1,5 @@
 \documentclass{UoYCSproject}
-
+\usepackage{booktabs}
 \addbibresource{dummyBib.bib}
 \author{Lilian Blot}
 \title{An example of a project reports in \LaTeXe\ with the   \textsf{UoYCSproject} class}
@@ -35,7 +35,7 @@
 
     Introduction
     Late delivery of software projects remains an ever present challenge, often attributed to the inherent uncertainties and complexities associated with development.
-    There are multiple factors that affect the delivery of a software project, however it is clear that project planning plays a role in this \cite{CHOW2008961}. \par
+    There are multiple factors that affect the delivery of a software project, however it is clear that project planning plays a role in this. \cite{CHOW2008961}. \par
     Agile Software development is a type of iterative planning method where a project is broken up into smaller “user stories” or tickets, each defining a specific task or part of a project that must be completed.
     Generally each ticket has an estimate attached to it, defining the time or effort it will take to finish.
     Some projects use time-based estimates like hours or days to estimate tickets, others teams assign “Story Points”, an abstract unit of perceived complexity, risk, and effort involved in implementing a specific feature or piece of functionality.
@@ -124,7 +124,7 @@
     GPT follows an autoregressive approach during both pre-training and fine-tuning, this means that the model generates text sequentially, predicting the next word in a sequence based on the preceding context.
     This allows GPT to capture complex dependencies and relationships in language, however GPT only looks at the context of previous words, left-to-right rather than bidirectionally like later models.
 
-    In October 2018, the Bidirectional Encoder Representations from Transformers (BERT) model was introduced by Devlin et al \cite{devlin2019bert}.
+    In October 2018, the Bidirectional Encoder Representations from Transformers (BERT) model was introduced by Devlin et al \cite{devlin2019bert} .
     BERT is a large language model that uses the transformer architecture and is pre-trained on a large corpus of unlabelled text, including the entire Wikipedia corpus and a large book corpus, totaling 3,300M words.
     It is trained using a masked language model (MLM) objective, where random tokens in a sequence are masked, and the model is trained to predict those masked tokens.
     BERT is considered a landmark in the development of large language models, for multiple reasons.
@@ -172,7 +172,7 @@
     This dataset has since been used by other researchers including Phan et al\. who looked at the potential and possible challenges of Graph Neural Network text
     classification in story point estimation [5].
     Their proposed model achieved an accuracy as high as 80\% on some projects within the dataset when classifying tickets into 6 'buckets' of story points.
-
+    Despite the model performing well, the validity of the model is in question, as the data that the model was trained on was from open source projects, and although the paper claims the story points in the dataset are accurate, it is not clear how this was verified.
     However, it is clear that there is a research gap into ticket effort estimation using large language models such as BERT.
     The model proposed in this paper aims to contribute towards filling this gap by using a large language model to classify tickets into 3 categories, “Small”, “Medium” and “Large”.
 
@@ -363,19 +363,18 @@
 
     The model was trained on a NVIDIA RTX 4500, and took approximately 6 hours to train for 30 epochs. \par
 
-    The model was trained on the training set, and then evaluated on the test set.
-    The test set was not used in the training of the model, and was used to evaluate the models performance on unseen data.
+    The model was trained on the training set, and then evaluated on the validation set.
+    The validation set was not used in the training of the model, and was used to compare models performance.
     The model was evaluated using the accuracy metric, which is the number of correct predictions divided by the total number of predictions.
     It was also evaluated using the F1 score, which is the harmonic mean of precision and recall.
     Where precision is the number of true positives divided by the number of true positives and false positives, and recall is the number of true positives divided by the number of true positives and false negatives.
 
-    To emable me to find the best model, I tested the model on the test set after every epoch.
+    To emable me to find the best model, I tested the model on the validation set after every epoch.
     This meant that I didn't risk losing the best model if the model overfit the training data without being tested.
     As the number of epochs is much smaller than traditional neural networks, early stopping was not used.
     Particularly as I found the model to be quite stable, and the loss to decrease consistently over the 30 epochs.
 
-    I found that the model performed best with a batch size of 32, and a learning rate of 2e-5 at 20 epochs.
-
+    I found that the model performed best with a batch size of 32, and a learning rate of 3e-5 at 20 epochs.
 
     \chapter{Experimental Model Evaluation}
     \label{ch:experimental-model-evaluation}
@@ -383,26 +382,77 @@
     The results of these experiments were used to decide whether there are any significant differences between the models, and which model is the best to use for the final model.
 
     \section{Accuracy evaluation}\label{sec:accuracy-evaluation}
-All models were trained for 30 epochs, similar to the hyperparameter search. The best accuracy was taken after testing on every epoch and the results are displayed below. \par
-%
-%\begin{table}[]
-%\centering
-%\begin{tabular}{@{}llll@{}}
-%\toprule
-%Model                                   & Accuracy                    & F1                          & Epochs                  \\ \midrule
-%\multicolumn{1}{|l|}{Bert-base-uncased} & \multicolumn{1}{l|}{0.733}  & \multicolumn{1}{l|}{0.7332} & \multicolumn{1}{l|}{20} \\ \midrule
-%\multicolumn{1}{|l|}{DistilBert}        & \multicolumn{1}{l|}{0.7189} & \multicolumn{1}{l|}{0.7192} & \multicolumn{1}{l|}{25} \\ \midrule
-%\multicolumn{1}{|l|}{Albert}            & \multicolumn{1}{l|}{0.7061} & \multicolumn{1}{l|}{0.7075} & \multicolumn{1}{l|}{29} \\ \midrule
-%BertOverflow                            & 0.71025                     & 0.7114                      & 2                       \\ \bottomrule
-%\end{tabular}
-%    \caption{Accuracy of models}
-%    \end{table}
+    All models were trained for 30 epochs, similar to the hyperparameter search. The best accuracy was taken after testing on every epoch and the results are displayed in \ref{tab:accuracy}. \par
+    \begin{table}[h]
+    \centering
+    \begin{tabular}{@{}|l|l|l|l|@{}}
+    \toprule
+    Model             & Accuracy & F1     & Epochs \\ \midrule
+    Bert-base-uncased & 0.733    & 0.7332 & 20     \\ \midrule
+    DistilBert        & 0.7189   & 0.7192 & 25     \\ \midrule
+    Albert            & 0.7061   & 0.7075 & 29     \\ \midrule
+    BertOverflow      & 0.71025  & 0.7114 & 2      \\ \bottomrule
+    \end{tabular}
+    \caption[Accuracy of models]{Accuracy of models} \label{tab:accuracy}
+    \end{table}
 
-    Test to see if this works
+    The Bert-base-uncased model performed the best, followed by the Distilbert model.
+    Distilbert was slightly faster to train than the Bert-base-uncased model, taking 4.5 hours to train for 25 epochs, compared to 6.5 hours to train for 20 epochs.
+    This does include testing the model on the validation set after every epoch, which increases the time. For the final test I will only test the model on the unseen test set after the desired number of epochs.
+
+    TODO compare prediction times
+
+    This is the model that will be used in the final model. \par
 
 
     \chapter{Finalised Model and Results }
     \label{ch:results}
+
+    This chapter discusses the final model, and the results of testing the model on the test set.
+    It also discusses the results of testing the model on a different unrelated project, to see how well the model generalises to unseen data.
+    Finally I perform an ablation study to see how well the model performs without the paraphrased data, custom loss function and data preprocessing.
+
+
+    \section{Results}]
+    The final model was trained on the entire dataset, and then tested on the test set.
+    This test set was not used in the training of the model but is from the same projects, and therefore is a good representation of how the model will perform on unseen but related data.
+    I then tested it on a set of tickets from a different project, to see how well it generalised to unseen data that is more likely to be different from the training data.
+
+    A seperate test set was used rather than using the validation set. This is because the validation set was used to compare the models, and therefore the model may have been overfit to the validation set.
+    The results are shown in table .
+
+    The results show that the model performs better on the classes for small and large, and worse on the medium class.
+    This is likely due to the fact that the medium class is the most ambiguous, and therefore the hardest to classify, even for a human.
+    The confusion matrix in TODO:  shows...
+
+The model was then tested on a different project, and the results are shown in table TODO: \par
+The results show that the model does not perform well on a different project, and therefore the model may not generalise well to unseen data.
+This is likely due to the fact that the model has been trained on a specific set of projects, and the project tested is for a plaform team, that mostly creates automations and cloud resources which is very different to the automotive projects in the training data .
+
+
+    \section{Ablation Study}
+    In order to see how much the paraphrased data, custom loss function and data preprocessing helped the model, I removed each in turn, testing the model on the test set after each change and also the unseen data from a seperate project.
+    The results are shown in table TODO: \par
+    I trained the model on the original dataset without adding the paraphrased data.
+    The aim of this is to see if the model performs better with the paraphrased data or if the paraphrasing is too different from the original data and it doesnt help, or if the data is too similar and overfits.
+    The results are shown in table TODO: \par
+
+    The results show that the model performs better with the paraphrased data, and therefore the paraphrased data will be used in the final model.
+
+    I then trained the model on the original dataset without using Guassian Distribution as the label for cross entropy loss.
+    This is to see if the custom loss function helps the model to learn the sequential nature of the classes.
+    The results are shown in table TODO: \par
+
+    The results show that the model performs better with the custom loss function, and therefore the custom loss function will be used in the final model.
+    However it is only a small improvement, and therefore the model may be able to be simplified by using the standard cross entropy loss function.
+
+    I then trained the model on the original dataset without using the data cleaner.
+    This is to see if the data cleaner helps the model to learn the context of the tickets, or if context is lost in the cleaning process.
+    The results are shown in table TODO: \par
+
+The results show that the model actually performed
+% Test with a validation set and then a test set from a different project and also unseen tickets from the same project
+
 
 
 
