@@ -1,24 +1,21 @@
 \documentclass{UoYCSproject}
 \usepackage{booktabs}
 \addbibresource{dummyBib.bib}
-\author{Lilian Blot}
-\title{An example of a project reports in \LaTeXe\ with the   \textsf{UoYCSproject} class}
-\date{Version 3.0, 2020-November}
-\supervisor{Jeremy L. Jacob}
+\author{Katie Maison}
+\title{Automated Ticket Estimation with BERT}
+\date{2nd May 2024}
+\supervisor{Peter Nightingale}
 \BSc
  \usepackage{rotating}
  \usepackage{tabularray}
  \usepackage{rotating}
  \usepackage{tabularray}
- \dedication{To all students everywhere}
- \usepackage{graphicx}
+\usepackage{graphicx}
 
 
 \acknowledgements{
-  I would like to thank my goldfish for all the help it gave me
-  writing this document.
-
-  As usual, my boss was an inspiring source of sagacious advice.
+  I would firstly like to thank my supervisor, Peter Nightingale, for his guidance and support throughout this project. \par
+  I would also like to thank my family for their support and encouragement, and my son Alfie and partner Alex for their endless patience and love.
 }
 
 % More definitions & declarations in example.ldf
@@ -38,7 +35,7 @@
     \setcounter{page}{1}
     \pagenumbering{arabic}
 
-    Introduction
+
     Late delivery of software projects remains an ever present challenge, often attributed to the inherent uncertainties and complexities associated with development.
     There are multiple factors that affect the delivery of a software project, however it is clear that project planning plays a role in this. \cite{CHOW2008961}. \par
     Agile Software development is a type of iterative planning method where a project is broken up into smaller “user stories” or tickets, each defining a specific task or part of a project that must be completed.
@@ -94,7 +91,7 @@
     The simplest judgement based approach, expert judgement, is a single expert estimating the ticket by themselves, however group estimation techniques such as Planning poker, whereby team members play a “game” to reach an agreement on the Story Point estimate of a tickets are also popular.
     Research has been done to examine the accuracy of these techniques by looking at the result of the same ticket estimated with both, showing that planning poker is more accurate that individual expert estimates \cite{MAHNIC20122086, RashidSCE}. Other
     In 2015, a survey was performed to determine the state of the practice of Effort Estimation of Agile Software Development, claiming to be the first of its kind.
-    The research surveyed 60 users of agile practices across 16 different countries. It established that 63\% of participants use Planning poker to perform estimations followed by 47\% used Analogous estimating (whereby parallels are drawn from previous stories and they are used to decide an estimate for new stories) and expert judgment (38\%) \cite{0.1145/2745802.2745813}.
+    The research surveyed 60 users of agile practices across 16 different countries. It established that 63\% of participants use Planning poker to perform estimations followed by 47\% used Analogous estimating (whereby parallels are drawn from previous stories and they are used to decide an estimate for new stories) and expert judgment (38\%) \cite{effortestimationsurvey}.
 
     \subsection{Model-based approaches}\label{subsec:model-based-approaches}
     In the last 30 years, many Algorithmic-Based Approaches have been proposed to automate the estimation of tickets
@@ -103,7 +100,7 @@
     The basic $COCOMO$ model defines the effort required to complete a project to be $a^2 \times (KLOC)a^2pm$.
     Where $KLOC$ is kilo lines of code, $a$ is a constant depending on the type of project and is expressed in person months ($pm$), the detailed version adds effort multipliers for each phase of a project, splits the effort estimation into subsystems and adds various extra multipliers to improve accuracy.
     Although this model can achieve a mean average accuracy of 91\% for effort estimation on projects, the model requires a lot of input information, including Lines of Code, number of files, number of external interfaces and developer experience with the technical stack.
-    COCOMO, as well as other model based estimators and regression models, are used much less in agile software development than previously in non-agile development methods due to the estimations being for tickets rather than for entire projects, where the attributes needed are more readily available and relevant and the planning stages are more extensive \cite{10.1145/2745802.2745813}.
+    COCOMO, as well as other model based estimators and regression models, are used much less in agile software development than previously in non-agile development methods due to the estimations being for tickets rather than for entire projects, where the attributes needed are more readily available and relevant and the planning stages are more extensive \cite{effortestimationsurvey}.
     As in a ticket rather than in a project, the main information is the textual description, with the shift towards agile software development, focus has shifted towards researching how we can leverage Natural Language Processing in order to estimate story points.
 
 
@@ -218,13 +215,9 @@
         \label{fig:ticket}
     \end{figure}
 
-    For the dataset in question, the word count in the description is between 2 and 1000, as shown in figure X.
-
-    [TODO: Add graph showing word count of ticket by class, probably a box plot per class]
-
     The dataset has two types of tickets, ones that have been estimated with a specific time and ones that have been estimated with story points.
     Ones that have been estimated with a specific time also have the "Actual time spent" logged on them.
-    This is useful as it may help our model become more 'intelligent' than a person estimating them as we can use true values. \par
+    This is useful as it may help our model become more accurate than a person estimating them, as we can use true values. \par
     An example story point estimation is shown in figure \ref{fig:ticket}, in box C.
     The projects for this were chosen by looking at projects that have more than 1000 tickets with story points, this is because it is likely that the more tickets that a team has estimated, the more accurate they are at estimating.
     Another requirement was for the tickets to be written only in English, this is because most large language models are language specific.
@@ -233,7 +226,7 @@
     \section{Pre-Processing}\label{sec:preprocessing}
 
     The main features of each ticket is its summary and description.
-    The description is written with Jira Markdown syntax, for example it allows formatted blocks of code to be added with the syntax `{code:java} {code}` and `h[1-6].` formats the following text as a heading.
+    The description is written with Jira Markdown syntax, for example it allows formatted blocks of code to be added with the syntax `\{code:java\} \{code\}` and `h[1-6].` formats the following text as a heading.
     In order to remove this syntax and reformat the text as plain text, a set of regex replace rules were used.
     These rules removed blocks of code and formatting syntax, but also has anonymised the data by removing mentions of users, for example `@KatieMaison`.
     This stops the model learning to differentiate the estimation for the ticket by a user as a feature, as this may have ethical considerations. \par
@@ -265,7 +258,7 @@
     In order to increase the generalisation of the model and therefore increase accuracy on unseen data, I have opted to use data augmentation to increase the number of data points.
     Back translation was tested as an augmentation technique, this is where a ticket is translated into a different language, and then translated back.
     I used the NLPAug Python library, which allows you to choose a translation model from huggingface to use to translate the text \cite{ma2019nlpaug}.
-    However upon inspecting the tickets, there was very little change in the wording of the ticket, and the model over-fit much more quickly, reaching a very small loss and test accuracy stagnated.
+    Upon inspecting the tickets, there was very little change in the wording of the ticket, and the model over-fit much more quickly, reaching a very small loss and test accuracy stagnated.
     Instead, paraphrasing had better results.
     To do so, I used a pretrained model from the huggingface library, "Finetuned ChatGPT paraphraser on T5-base". \cite{chatgpt_paraphraser}
     This model is fine-tuned on a dataset of phrases and paraphrases.
@@ -290,20 +283,29 @@
     The architecture of the model can be described in three parts, Tokenization Layer, Transformer Layers and Classification Head.
     These will be described sequentially in the following sections.\par
 
-    [TODO: Add diagram of architecture]\par
+    \begin{figure}[h]
+        \includegraphics[width=\textwidth]{./figures/prbx.drawio}
+        \caption{Model Architecture}
+        \label{fig:model-architecture}
+    \end{figure}
+
 
     \subsection[tokenization-layer]{Tokenization Layer}
     In order to be used in a Large Language Model, textual input needs to be transformed into tokens and embeddings.
     My model uses the BERT Tokenizer, the specific implementation of which is provided by the transformers huggingface library. \par
 
     \begin{figure}[h]
-        \includegraphics[width=\textwidth]{./figures/bert-tokenizer}
-        \caption{Bert Tokenizer from the Original Bert Paper}
+        \includegraphics[width=\textwidth]{./figures/tokenizer-example}
+        \caption{Bert Tokenizer Example}
         \label{fig:tokenizer-figure}
     \end{figure}
 
     % Maybe i can add to the tokenizer vocab? https://medium.com/@pierre_guillou/nlp-how-to-add-a-domain-specific-vocabulary-new-tokens-to-a-subword-tokenizer-already-trained-33ab15613a41
-    The tokenizer works by splitting each tickets description into individual tokens, then converting these into a numerical value from the models vocabulary, as shown in the example in figure \ref{fig:tokenizer-figure}.
+    The tokenizer works by splitting each tickets description into individual tokens, then converting these into a numerical value from the models vocabulary.
+    As shown in the example in figure \ref{fig:tokenizer-figure}, tokens can be a single word, or a sub-word, or a character. The tokenizer breaks down the text into these tokens based on what is in its vocabulary.
+    In the example, the word "tokenizer" is split into "token" and "\#\#izer", as the word "tokenizer" is not in the vocabulary, but the sub-word "token" is.
+    The special token [CLS] is added to the start of the tokenized text, and [SEP] is added to the end, and between sentences if there are multiple in one input.
+    The end of the tokenized text is then padded with [PAD] tokens to the length of the limit of the model, which is 256.
     The tokens are then padded to the length set, in this case 256 and then the tokenized test is passed to the transformer layers.
     The BERT Tokenizer used is uncased, meaning that it turns everything into lower case and removes accents before tokenizing it.
     \par
@@ -341,7 +343,7 @@
 
     \textbf{BERTOverflow: Code and Named Entity Recognition in StackOverflow}
     BERTOverflow is a BERT model that is pre-trained on a large corpus of 152 million sentences from StackOverflow, a question and answer website for programming questions \cite{tabassum2020code}.
-    The architecture of this model is the same as the classic BERT model, however the fine-tuning may enable it to have better context understanding of technical terms.
+    Although the architecture of this model is the same as the classic BERT model, the fine-tuning will enable the model to better understand the context of the text.
     \par
 
     \textbf{DistilBERT: a distilled version of BERT: smaller, faster, cheaper and lighter}
@@ -443,20 +445,30 @@ BertOverflow & 0.7103   & 0.7114 & 21 & 392 minute      \\
 \caption{Accuracy of models} \label{tab:accuracy}
 \end{table}
 
-\begin{figure}
-        \includegraphics[width=\textwidth]{./figures/model-accuracy}
+\begin{figure}[h]
+    \centering
+
+        \includegraphics[width=12cm]{./figures/model-accuracy}
         \caption{Bar chart showing the accuracy of the models}
         \label{fig:accuracy}
     \end{figure}
 
-
-
     The Bert-base-uncased model performed the best, followed by the Distilbert model.
     Distilbert was faster to train than the Bert-base-uncased model, taking 240 minutes to train for 25 epochs, compared to 380 to train for 20 epochs.
     This would mean that the Distilbert model would be more cost effective to train, as it would take less time to train. However it is less accurate, so a trade-off would need to be made between accuracy and cost.
-    TODO compare prediction times
 
-    The Albert model performed the worst, with an accuracy of 0.7061, and a F1 score of 0.7075. Although pe
+    The Albert model performed the worst, with an accuracy of 0.7061, and a F1 score of 0.7075 and took the longest to train, at 464 minutes for 29 epochs.
+    However the graph of the accuracy in figure \ref{fig:accuracy-graph} shows that the models accuracy on the validation set was still increasing, and therefore it may have performed better with more epochs.
+    The graph also shows that the BertOverflow models accuracy steadily decreased after 2 epochs, and therefore it is likely that the model was overfitting the training data, particularly as the loss value continued to get smaller.
+     \par
+
+\begin{figure}[h]
+    \centering
+
+        \includegraphics[width=12cm]{./figures/accurach-epochs}
+        \caption{Graph showing the accuracy of the models over the number of epochs on the validation set}
+        \label{fig:accuracy-graph}
+    \end{figure}
 
     \chapter{Finalised Model and Results }
     \label{ch:results}
@@ -476,7 +488,8 @@ BertOverflow & 0.7103   & 0.7114 & 21 & 392 minute      \\
 
     The results show that the model performs better on the classes for small and large, and worse on the medium class.
     This is likely due to the fact that the medium class is the most ambiguous, and therefore the hardest to classify, even for a human.
-    The confusion matrix in TODO:  shows...
+    The confusion matrix in table \ref{fig:confusion-matrix} shows that the model is able to capture the sequential nature of the classes, as the model is more likely to predict a ticket as a class that is closer to the actual class.
+    This is shown by the fact that the model is more likely to incorrectly predict a small ticket (0) as being a medium ticket (1) than a large ticket (2).
 
 
 \begin{table}
@@ -496,7 +509,7 @@ BertOverflow & 0.7103   & 0.7114 & 21 & 392 minute      \\
                                             & 1                & 207 & 753 & 192 \\
                                             & 2                & 34  & 218 & 541
 \end{tblr}
-\caption{Confusion Matrix}
+\caption{Confusion Matrix}\label{fig:confusion-matrix}
 \end{table}
     The model was then tested on a different project, and the results are shown in table TODO: \par
     The results show that the model does not perform well on a different project, and therefore the model may not generalise well to unseen data.
@@ -508,17 +521,41 @@ BertOverflow & 0.7103   & 0.7114 & 21 & 392 minute      \\
     This is 3-4\% higher than the model, however the model is able to estimate the tickets much faster than a human, and therefore is more efficient.
     Furthermore, as the model is trained on tickets throughout the entire history of the project, the model is able to estimate tickets that are similar to ones that have been estimated before, and therefore the model is able to learn from the history of the project, rather than just the tickets that have been estimated or worked on by the person, or people, estimating the tickets.
 
+
     \section{Ablation Study}
     In order to see how much the paraphrased data, custom loss function and data preprocessing helped the model, I removed each in turn, testing the model on the test set after each change and also the unseen data from a seperate project.
     I trained the model on the original dataset without adding the paraphrased data. The aim of this is to see if the model performs better with the paraphrased data or if the paraphrasing is too different from the original data and it doesnt help, or if the data is too similar and overfits.
-    The results show that the model performs better with the paraphrased data, and therefore the paraphrased data will be used in the final model.
+    The results of these tests are shown in table TODO \par
+
+\begin{table}[]
+\centering
+\begin{tabular}{ccc}
+    \toprule
+
+                     & Accuracy   & F1         \\
+    \midrule
+No Data Augmentation & 0.6485 & 0.6302 \\
+No Pre Processing    & 0.7164 & 0.7175 \\
+No Gaussian Labels   & 0.7249 & 0.7249 \\
+Original             & 0.7348  & 0.7358 \\
+    \bottomrule
+\end{tabular}
+    \caption{Accuracy of ablation study} \label{tab:accuracy-ablation}
+
+\end{table}
+
+
+
+    The results show that the model performs better with the paraphrased data. This is likely because the paraphrased data allows the model to see more examples of different ways that tickets can be written, and therefore the model is able to generalise better to unseen data.
     I then trained the model on the original dataset without using Guassian Distribution as the label for cross entropy loss.  This is to see if the custom loss function helps the model to learn the sequential nature of the classes.
-    The results show that the model performs better with the custom loss function, and therefore the custom loss function will be used in the final model.
+    The results show that the model performs better with the custom loss function, despite only a small improvement, it enables the model to have a more useful output, as the model is more likely to predict a ticket as a class that is closer to the actual class. This is shown by the comparison of the confusion matrix in figure \ref{fig:confusion-matrix} and the confusion matrix in figure \ref{fig:confusion-matrix-no-guassian}. The no guassian models confusion matrix shows a slightly wider spread of values. This means for example, that when a ticket is small, the guassian model is more likely to predict it as medium, rather than large, than the no guassian model is.
     However it is only a small improvement, and therefore the model may be able to be simplified by using the standard cross entropy loss function.
     I then trained the model on the original dataset without using the data cleaner. This is to see if the data cleaner helps the model to learn the context of the tickets, or if context is lost in the cleaning process.
-    The results show that the model actually performed almost the same without the data. Although the datacleaner removes syntax and allows more of the text of the description to be used, it may be that the model is able to learn from the syntax in relation to the context of the ticket.
+    The results show that the model actually performed almost the same without the data cleaner. Although the datacleaner removes syntax and allows more of the text of the description to be used, which i expected to make a large affect on the accuracy, it may be that the model is able to learn from the syntax in relation to the context of the ticket.
     Further experiments could be done to see if the data cleaner is actually needed, or if the model can learn the context of the ticket without it given more fine tuning and potentially more data.
-    The results of these tests are shown in table TODO: \par
+
+
+
 
 
     % Test with a validation set and then a test set from a different project and also unseen tickets from the same project

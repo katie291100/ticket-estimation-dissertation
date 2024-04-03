@@ -46,7 +46,7 @@
 %\PassOptionsToPackage{twoside=false}{typearea}
 \LoadClass[fontsize=12pt,a4paper,abstracton,twoside=false,numbers=noenddot]{scrreprt}
 \RequirePackage{scrhack}
-\RequirePackage[toc,page]{appendix}{
+\RequirePackage[toc,page]{appendix}
 \RequirePackage{graphicx}
 
 \RequirePackage[T1]{fontenc} % prevents < in text mode turning into
