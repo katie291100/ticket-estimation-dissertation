@@ -126,7 +126,7 @@
                \protect\BEng, \protect\MEng, etc.}
   \else%
     \large Submitted in part fulfilment for the degree of
-    \UoYCSP@degree.%
+    \UoYCSP@degree\ in Computer Science.%
   \fi%
 \end{center}
 }

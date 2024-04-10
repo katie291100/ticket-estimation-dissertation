@@ -14,7 +14,7 @@
 
 
 \acknowledgements{
-  I would firstly like to thank my supervisor, Peter Nightingale, for his guidance and support throughout this project. \par
+  I would first like to thank my supervisor, Peter Nightingale, for his guidance and support throughout this project. \par
   I would also like to thank my family for their support and encouragement, and my son Alfie and partner Alex for their endless patience and love.
 }
 
@@ -36,17 +36,22 @@
     \pagenumbering{arabic}
 
 
-    Late delivery of software projects remains an ever present challenge, often attributed to the inherent uncertainties and complexities associated with development.
-    There are multiple factors that affect the delivery of a software project, however it is clear that project planning plays a role in this. \cite{CHOW2008961}. \par
+    Late delivery of software projects remains an ever-present challenge, often attributed to the inherent uncertainties and complexities associated with development.
+    Multiple factors affect the delivery of a software project, however, it is clear that project planning plays a role in this \cite{CHOW2008961}. \par
     Agile Software development is a type of iterative planning method where a project is broken up into smaller “user stories” or tickets, each defining a specific task or part of a project that must be completed.
-    Generally each ticket has an estimate attached to it, defining the time or effort it will take to finish.
+    It was introduced in 2001 by a group of software developers who wanted to move away from the traditional “waterfall” method of software development, where a project is planned in its entirety before any work is carried out, to a more iterative and flexible method of development~\cite{beck2001agile}.
+    Generally, each ticket has an estimate attached to it, defining the time or effort it will take to finish.
     Some projects use time-based estimates like hours or days to estimate tickets, others teams assign “Story Points”, an abstract unit of perceived complexity, risk, and effort involved in implementing a specific feature or piece of functionality.
-    For example, a Story Point value of 1, may be equated to 2 hours work or less, 8 around 22 hours of active work on a ticket or 11 hours for 2 people.
-    It is common for the Story Point scale used to be an adjusted fibbonaci, of 1, 2, 3, 5, 8, 13, 15, 20, 40, 100.
+    It is common for the Story Point scale used to be a modified Fibonacci, of 1, 2, 3, 5, 8, 13, 15, 20, 40, 100. \cite{scrumFib}
+    A ticket that is estimated to be 1 Story Point is deemed to be the smallest amount of work that can be done, and a ticket that is estimated to be 100 Story Points is deemed to be the largest amount of work that can be done.
+    A 1 story point ticket would be something a developer would consider relatively easy, requiring minimal effort to complete, most likely less than an hour or active work.
+    Therefore a 2 story point ticket would be something that would require double the amount of effort and may take double the amount of time, although something could take a small amount of effort and a longer time to complete due to having to wait for builds or similar.
+    This would still count as a 1 or 2 story point ticket as the effort is being estimated rather than the time.
     Estimates enable a Team leader to plan what tickets can be completed in a “sprint”, or “iteration”, usually a period of 2-4 weeks, based on how many points they think the team will be able to do.
-    The number of story points that a team is able to complete in a single iteration is known as the teams "Velocity" \cite{cohn2005agile}.
+    The number of story points that a team can complete in a single iteration is known as the teams "Velocity" \cite{cohn2005agile}.
     The process for estimating tickets can be time consuming, the faster that a ticket is estimated, the faster it can be planned for completion.
-    Furthermore, the more accurate an estimation is, the more likely it is that a release, which in agile, is a collection of tickets associated with features or bug-fixes in a release, can be delivered on time, as the work will have been planned accordingly. \par
+    Furthermore, the more accurate an estimation is, the more likely it is that a release, can be delivered on time, as the work will have been planned accordingly.
+In agile development, a release is a collection of tickets associated with features or bug fixes due to be added to a product. \par
 
     When a ticket is created, it is placed into a to-do list of tickets called a “backlog”.
     Tickets in the backlog are then estimated for their effort or time to complete, and are then ordered according to multiple factors including this estimate and the priority of the ticket.
@@ -55,15 +60,16 @@
     Automated ticket estimation may enable the correct prioritisation of tickets before any estimation activities are carried out by the team or members of the team.
     By using a large language model, the information provided in a tickets title and description can be used as features in a classification neural network.
     The model proposed in this paper is intended to participate in the estimation process rather than perform the estimation as the source of truth.
-    This is because incorrect estimates can have severe consequences on project planning, a model would need to be extremely accurate in order to be trusted to estimate the ticket correctly.
+    This is because incorrect estimates can have severe consequences on project planning, a model would need to be extremely accurate to be trusted to estimate the ticket correctly.
     In practice the model participation can happen in multiple ways.
     The model may act as an advisor for the “expert” who is estimating tickets.
-    Alternatively the model may participate in agile poker sessions with members of a project, whereby engineers play a “game” where everyone chooses a card that equates to the value that they want to estimate, then discuss and re-estimate until a consensus is reached \cite{1667560}. \par
+    Alternatively, the model may participate in planning poker sessions with members of a project.
+    Planning poker is when engineers play a “game” where everyone chooses a card that equates to the value that they want to estimate, then discuss and re-estimate until a consensus is reached \cite{1667560}. \par
 
-    In order to simplify the problem, the model proposed in this paper will be able to classify tickets into 3 categories, “Small”, “Medium” and “Large”.
+    To simplify the problem, the model proposed in this paper will be able to classify tickets into 3 categories, “Small”, “Medium” and “Large”.
     When inspecting data from a project in a large automotive company, who estimate using minutes and hours, it was found that the accuracy of ticket estimation was 74\% when using the above categories.
-    Therefore the model proposed in this paper will aim to achieve an accuracy of 70\% or higher in order to be useful.
-    Furthermore, I am aiming to ensure that the model takes less than 4 hours to train, and less than 1 second to classify a ticket once trained.
+    Therefore the model proposed in this paper will aim to achieve an accuracy of 70\% or higher to be useful.
+    Furthermore, I am aiming to ensure that the model takes less than 4 hours to train, and upon requesting an estimate for a ticket, it should be recieved in under 20 seconds.
     This is so that the model can be used in real time, and can be retrained on a regular basis to ensure that it is up to date with the latest data, ensuring continuous learning but also reduce costs. \par
 
 
@@ -72,7 +78,7 @@
     This section discusses the current research into methods of ticket estimation, including with Deep learning, as well as in the broader field of Natural Language Processing.
     It summarises and analyses existing work as well as highlighting unknowns within the topics.
 
-    It is broken down into 3 sub-sections.
+    It is broken down into three sub-sections.
     First “Estimation in Software Engineering Projects” focuses on research about effort and time estimation as a concept, as well as research into techniques for doing estimations.
     The next sub-section focuses on relevant research into Large Language Models and Natural Language Processing.
     Lastly, the “Agile Estimation with Deep Learning” looks at Deep learning models specifically for classification of text, particularly of Agile Tickets for estimation.
@@ -89,20 +95,26 @@
 
     Judgement-based approaches rely on the knowledge of experts about the field or project in question, who can make an estimate based on their experiences and knowledge on how much effort a ticket will take to complete.
     The simplest judgement based approach, expert judgement, is a single expert estimating the ticket by themselves, however group estimation techniques such as Planning poker, whereby team members play a “game” to reach an agreement on the Story Point estimate of a tickets are also popular.
-    Research has been done to examine the accuracy of these techniques by looking at the result of the same ticket estimated with both, showing that planning poker is more accurate that individual expert estimates \cite{MAHNIC20122086, RashidSCE}. Other
+    Research has been done to examine the accuracy of these techniques by looking at the result of the same ticket estimated with both, showing that planning poker is more accurate that individual expert estimates \cite{MAHNIC20122086, RashidSCE}. \par
     In 2015, a survey was performed to determine the state of the practice of Effort Estimation of Agile Software Development, claiming to be the first of its kind.
     The research surveyed 60 users of agile practices across 16 different countries. It established that 63\% of participants use Planning poker to perform estimations followed by 47\% used Analogous estimating (whereby parallels are drawn from previous stories and they are used to decide an estimate for new stories) and expert judgment (38\%) \cite{effortestimationsurvey}.
-
+    The survery also found that the most common scale used for estimation was story points, with 61\% of participants using it.
+    Only 21\% of participants believed that their estimation techniques were accurate to within 5\% of the actual effort required to complete a ticket.
+    The survey also examined peoples beliefs on reasons for innacurate estimations, with 32\% saying that it is due to innacurate and changing requirements, poorly written tickets.
+    Other reasons were Project Management issues (25\%), Team related issues such as lack of knowledge or experience (18\%) and overoptimism, lack of formal estimation process, ignoring testing effort and insufficient customer involvedment at $\leq 10$\% each.
+    Unfortunately although responses were collected from 60 different people, the survey does not report how many companies responses were collected from. This may call in to question the validaty of the data for the wider agile community. \par
     \subsection{Model-based approaches}\label{subsec:model-based-approaches}
-    In the last 30 years, many Algorithmic-Based Approaches have been proposed to automate the estimation of tickets
-    and projects.
+    In the last 30 years, many Algorithmic-Based Approaches have been proposed to automate the estimation of software development projects.
     In 1981, the Constructive Cost Estimation Model ($COCOMO$) model was proposed by DR. Berry Boehm \cite{Boehm2001}.
     The basic $COCOMO$ model defines the effort required to complete a project to be $a^2 \times (KLOC)a^2pm$.
-    Where $KLOC$ is kilo lines of code, $a$ is a constant depending on the type of project and is expressed in person months ($pm$), the detailed version adds effort multipliers for each phase of a project, splits the effort estimation into subsystems and adds various extra multipliers to improve accuracy.
+    Where $KLOC$ is kilo lines of code, $a$ is a constant depending on the type of project and is expressed in person months ($pm$). The detailed version adds effort multipliers for each phase of a project, splits the effort estimation into subsystems and adds various extra multipliers to improve accuracy.
     Although this model can achieve a mean average accuracy of 91\% for effort estimation on projects, the model requires a lot of input information, including Lines of Code, number of files, number of external interfaces and developer experience with the technical stack.
     COCOMO, as well as other model based estimators and regression models, are used much less in agile software development than previously in non-agile development methods due to the estimations being for tickets rather than for entire projects, where the attributes needed are more readily available and relevant and the planning stages are more extensive \cite{effortestimationsurvey}.
     As in a ticket rather than in a project, the main information is the textual description, with the shift towards agile software development, focus has shifted towards researching how we can leverage Natural Language Processing in order to estimate story points.
 
+
+
+%    https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4343762 TODO
 
     \section{Large Language Models}
     \label{sec:large-language-models}
@@ -111,7 +123,8 @@
     These models are characterized by their size and complexity, often consisting of millions or even billions of parameters.
     Large language models are built on advanced deep learning architectures and are typically pre-trained on massive amounts of textual data (corpus) before being fine-tuned for specific tasks. \par
 
-    In 2017, transformer based architecture was introduced in a model proposed by Vaswani et al. in their paper, "Attention is all you need" \cite{vaswani2023attention}.
+    In 2017, transformer based architecture was introduced in a model proposed by Vaswani et al.
+    in their paper, ''Attention is all you need'' \cite{vaswani2023attention}.
     It has become the foundational model for a variety of natural language processing (NLP) tasks, including text classification, question answering, summarization, and translation.
     The transformer based architecture is a type of neural network architecture that is designed to process sequential data, such as text, and is based on the concept of attention.
     The core innovation of this architecture is the introduction of 'self-attention'.
@@ -119,13 +132,18 @@
     It also allows the model to process all words in a sequence simultaneously, rather than sequentially, therefore improving the training speed as it allows parallelization.
     The mechanism computes attention scores for each token in the input sequence, indicating how much attention should be paid to other tokens.
     By considering relationships between all tokens simultaneously, the model can capture long-range dependencies and contextual information effectively.
-    To capture diverse types of information and relationships, the self-attention mechanism is typically divided into multiple attention "heads".
+    To capture diverse types of information and relationships, the self-attention mechanism is typically divided into multiple attention ''heads''.
     Each head independently computes attention scores, allowing the model to focus on different aspects of the input.
     By combining information from multiple heads, the model can capture a richer set of features and relationships within the sequence.
     \par
-    In June 2018, Generative Pre-Trained Transformers (GPT) was introduced by OpenAI in the paper "Improving Language Understanding by Generative Pre-Training".
+    In June 2018, Generative Pre-Trained Transformers (GPT) was introduced by OpenAI in the paper ''Improving Language Understanding by Generative Pre-Training'' \cite{GPT2018}.
     GPT follows an autoregressive approach during both pre-training and fine-tuning, this means that the model generates text sequentially, predicting the next word in a sequence based on the preceding context.
     This allows GPT to capture complex dependencies and relationships in language, however GPT only looks at the context of previous words, left-to-right rather than bidirectionally like later models.
+    GPT achieved a GLUE benchmark score of 72.8\% on average, outperforming previous state-of-the-art models at the time of 68.9\% . \par
+
+In the years since the initiat GPT release, openAI has released multiple versions of the model, with the most recent at time of writing being GPT-4 which was released in 2023 \cite{openai2024gpt4}.
+OpenAI did not test GPT-4 on the GLUE benchmark, however it is expected to outperform GPT-3.
+They did however test it on some standard exams originally designed for humans, which achieved results above the 80th centile in many, including the Uniform Bar Exam (~90th centile) and SAT Math (~89th centile). It did however get much lower scores in AP English Language and Composition (8-44th centile). \cite{openai2024gpt4} \par
 
     In October 2018, the Bidirectional Encoder Representations from Transformers (BERT) model was introduced by Devlin et al \cite{devlin2019bert} .
     BERT is a large language model that uses the transformer architecture and is pre-trained on a large corpus of unlabelled text, including the entire Wikipedia corpus and a large book corpus, totaling 3,300M words.
@@ -133,18 +151,29 @@
     BERT is considered a landmark in the development of large language models, for multiple reasons.
     An important difference between BERT and previous language models is that it is bidirectional, meaning that it can
     use the context of both the left and right side of a word when processing it, enabling the model to capture richer contextual information compared to previous unidirectional models.
-    At time of release, BERT outperformed all other Large Language Models on the General Language Understanding Evaluation (GLUE Benchmark), a set of tasks that are designed to measure the performance of models that aim to understand language.
+    At time of release, BERT outperformed all other Large Language Models on the General Language Understanding Evaluation (GLUE Benchmark).
     An average of 79.6\% on the $GLUE$ benchmark tasks was achieved by the $BERT_{base}$, 4.4\% higher than the previous highest score achieved by OpenAI's GPT.
 
     The release of BERT and GPT in 2018 was followed by the proposal of many new models based on the transformer architecture in 2019.
-    XLNet was introduced by researchers at Google and Carnegie Mellon University, it is another transformer-based language model that extends the bidirectional context understanding of BERT while addressing some of its limitations.
+    XLNet was introduced by researchers at Google and Carnegie Mellon University, it is another transformer-based language model that extends the bidirectional context understanding of BERT while addressing some of its limitations \cite{yang2020xlnet}.
     XLNet uses a permutation language model (PLM) objective.
     Instead of masking random tokens, XLNet considers all tokens in the sequence as potential candidates for prediction.
-    This means that the model is trained to predict the probability distribution over all possible permutations of the sequence.
+    This means that the model is trained to predict the probability distribution over all possible permutations of the sequence. \par
+
+    \section{Text Classification with Large Language Models}
+    \label{sec:text-classification}
+    Large language models have been shown to be effective in a wide range of natural language processing tasks, including text classification.
+    Text classification is the process of assigning a label or category to a piece of text based on its content.
+    It is a fundamental task in NLP and has many applications, such as sentiment analysis, spam detection, and topic classification.
+    Zero shot classification is a type of text classification where a model is trained to classify text into categories that it has never seen before. For example a model trained on classifying animals could be used to classify a piece of text about a car, without ever seeing a car in the training data. This is beneficial as it allows the model to be used in a wider range of applications, without needing to be retrained for each new category. THis technique was examined in a paper called "Zero-shot Text Classification With Generative Language Models" im
+    Few shot classification is a type of text classification where a model is trained on a small number of examples for each category that it will be classifying text into. For example, a model trained on classifying animals could be trained on a small number of examples of each animal that it will be classifying.
+    However in this paper, the model will be trained on a large number of examples for each category, as the data is available. This is referred to as fine-tuning. \par
+     Sentiment analysis is one of the most common applications of text classification, it is the process of determining the sentiment or opinion expressed in a piece of text, such as positive, negative, or neutral.
 
 
-% This part is maybe not neccessary?
-%    An important part of Large language models is Tokenization, which is the process of splitting a string into a list of
+
+%
+% An important part of Large language models is Tokenization, which is the process of splitting a string into a list of
 %    tokens.
 %    A token can be a word, sentence, paragraph or even a single character.
 %    Tokenization is performed by a Tokenizer, which is a class that defines a vocabulary and methods for encoding.
@@ -165,17 +194,20 @@
     \label{sec:estimation-with-deep-learning}
 
     In 2018, Choetkiertikul et al.
-    introduced a significant contribution to the field of software engineering with their paper titled 'A deep learning model for estimating story points.' \cite{8255666}.
+    introduced a paper titled 'A deep learning model for estimating story points.' \cite{8255666}.
     This research, conducted at the University of Wollongong (Australia), presents a model for estimating the story point estimation of tickets (DEEP-SE) and is the most notable research paper on ticket classification with deep learning.
     The model uses long short-term memory and recurrent highway network which are both types of recurrent neural network (RNN) architectures.
-    It defines the task as a regression problem and achieves a standardized accuracy of 52.66\%
+    It defines the task as a regression problem and achieves a standardized accuracy of between 17-71.24\% dependent on the project.
     \[SA = (1-\frac{MAE}{MAE_{rguess}}) \times 100\]
     where $MAE$ is the Mean Absolute Error and $MAE_{rguess}$ is the MAE of a large number (e.g. 1000 runs) of random guesses. Such that $MAE$, defined as \[ MAE = \frac{1}{N}\sum_{i=1}^{N}|ActualSP_{i} - EstimatedSP_{i}|\] where $N$ is the number of issues used for evaluating the performance (i.e. test set), $ActualSP_i$ is the actual story point, and $EstimatedSP_i$ is the estimated story point, for the issue $i$.
     The dataset used for this model was 23,313 tickets story points, collected from 16 large open source projects.
-    This dataset has since been used by other researchers including Phan et al\. who looked at the potential and possible challenges of Graph Neural Network text
+    Despite the model performing well, the validity of the model is in question. The data that the model was trained on was from open source projects, and although the paper claims the story points in the dataset are accurate, it is not clear how this was verified. DEEP-SE also performed poorly on some projects, with an accuracy as low as 17\%, particularly on projects with very few tickets.
+
+    The dataset has since been used by other researchers including Phan et al\. who looked at the potential and possible challenges of Graph Neural Network text
     classification in story point estimation \cite{phan2022story}.
-    The proposed model from Choetkiertikul et al. achieved an accuracy as high as 80\% on some projects within the dataset when classifying tickets into 6 'buckets' of story points.
-    Despite the model performing well, the validity of the model is in question, as the data that the model was trained on was from open source projects, and although the paper claims the story points in the dataset are accurate, it is not clear how this was verified.
+    The proposed model from Phan et al. achieved an accuracy of 100\% on one project within the dataset, but averaged at 78.63\% when classifying tickets into 4 'buckets' of story points. "Small" (1-5), "Medium" (6-15), "Large" (16-40) and "Huge" (40-100).
+    The model uses a Graph Neural Network (GNN) to classify the tickets, which is a type of neural network that is designed to work with graph data, using the title and description of the ticket as input features. The model uses a graph convolutional network (GCN) to process the graph data, and a feedforward neural network to classify the tickets.
+    As the model was trained on the same dataset as DEEP-SE, and the same concerns about the validity of the data apply.
 
     It is clear that there is a research gap into ticket effort estimation using large language models such as BERT.
     The model proposed in this paper aims to contribute towards filling this gap by using a large language model to classify tickets into 3 categories, “Small”, “Medium” and “Large”.
@@ -196,17 +228,17 @@
     Permission has been sought from the company to use the data, and the data has not been made public to ensure that no sensitive information is leaked.
 
 
-    \chapter{Methodoloy}
+    \chapter{Methodology}
     \label{ch:methodology}
     This section introduces the proposed model for the classification of software development tickets.
     It covers explanation of the datasets, preprocessing, data augmentation methods and the architecture of different transformer models that were evaluated as layers in the final model.
-    The last subsection discusses the ethics of the problem.
-
 
     \section{Datasets}\label{sec:datasets}
     The datasets used to evaluate this model come from a large automotive software company, containing a total of 19,500 tickets, across 7 projects.
+    This was exported from the Jira ticketing system, which is a popular tool used by software development teams to track issues and bugs.
+    This dataset was chosen rather than the dataset used in DEEP-SE as it is more recent. It also contains tickets from only one company that use the same ticketing system, rather than multiple open source projects from different systems as in the DEEP-SE dataset \cite{8255666}. This makes the dataset more consistent, as the tickets are likely to be written in a similar style, and the estimation process is likely to be similar. \par
     An example ticket is shown in figure \ref{fig:ticket}.
-    Every ticket has a title, or a "Summary" that is a short description of the ticket which usually less than X words. This is shown in box A of the figure.
+    Every ticket has a title, or a "Summary" that is a short description of the ticket which usually less than 20 words.
     It then has a description, this a longer piece of text that explains what the aim of the ticket is as well as additional information such as design decisions, criteria for the ticket and links to related documentation. (Shown in box B) \par
 
     \begin{figure}[h]
@@ -235,11 +267,14 @@
     This is because usually in a ticket, a title has the most important information in it, often containing keywords about the contents of the ticket. \par
     This is important as the model has a word limit of 512 tokens, and the description is sometimes longer than this, therefore as the description is truncated, the more important information from the summary goes at the start..
 
-    In order to enable classification, an additional column $class$ was added to the dataset, where $class(ticket) \in \{0,1,2\}$, where 0 is small, 1 is medium and 2 is large.
-    "Small" tickets have been defined as those that take 1 hour or less to complete and are estimated to be 1 or less Story Point in effort.
+    To enable classification, an additional column $class$ was added to the dataset, where $class(ticket) \in \{0,1,2\}$, where 0 is small, 1 is medium and 2 is large.
+    "Small" tickets have been defined as those that take 1 hour of less to complete and are estimated to be 1 or less Story Point in effort.
     "Medium" tickets have been defined as those that take between 1 and 5 hours, or are estimated to be between 1 and 5 story points.
     "Large" tickets are defined to take more than 5 hours to complete, or have more than 5 story points as an estimate.
 
+    These classes were chosen as they are the most even split of the data, with 31\% of tickets being small, 37\% being medium and 32\% being large. I chose not to add a fourth class for "Huge" tickets as there were very few tickets that were estimated to be 40 or more story points, and the model would not have been able to learn from them effectively.
+
+    The data was then split into a training set and a test set, with 80\% of the data being used for training, 10\% for validation and 10\% for testing.
 
 %\begin{tabular}{|p{7cm}|p{2cm}|p{1.5cm}|p{1cm}|}
 %  \hline
@@ -312,7 +347,7 @@
 
     One of the benefits of the preprocessing discussed in section \ref{sec:preprocessing} is that it reduces the size of the textual description in the dataset, as it removes a lot of characters.
     This enables the model to get more information from the text, as the model has a word limit of 256 tokens. As each non-alphanumeric character is a token in iteself, this means that the model can get more information from the words in the text once these are removed.
-    I tokenized the data before and after preprocessing, and found that the average number of tokens in the description was reduced from 111 to 91, but more importantly, the upper quartile value and upper range was reduced to fall inside of the 256 token limit.
+    I tokenized the data before and after preprocessing, and found that the average number of tokens in the description was reduced from 111 to 91. The upper quartile value and upper range was also reduced to fall inside the 256 token limit.
     This is shown in figure \ref{fig:token-boxplot}.
 
     \begin{figure}[h]
@@ -438,7 +473,7 @@ Model        & Accuracy & F1     & Epochs  & Time to Train\\
 Bert Base    & 0.7330   & 0.7332 & 20 & 380 minutes     \\\addlinespace[0.5em]
 DistilBert   & 0.7189   & 0.7192 & 25 & 240 minutes     \\\addlinespace[0.5em]
 Albert       & 0.7061   & 0.7075 & 29 & 464 minutes    \\\addlinespace[0.5em]
-BertOverflow & 0.7103   & 0.7114 & 21 & 392 minute      \\
+BertOverflow & 0.7103   & 0.7114 & 2 & 392 minute      \\
 \bottomrule
 \end{tabular}
 
@@ -491,6 +526,9 @@ BertOverflow & 0.7103   & 0.7114 & 21 & 392 minute      \\
     The confusion matrix in table \ref{fig:confusion-matrix} shows that the model is able to capture the sequential nature of the classes, as the model is more likely to predict a ticket as a class that is closer to the actual class.
     This is shown by the fact that the model is more likely to incorrectly predict a small ticket (0) as being a medium ticket (1) than a large ticket (2).
 
+    In terms of where it fits in the literature, the model is more accurate than the model proposed by Choetkiertikul et al. \cite{8255666}, which classifies tickets up to 71\% accuracy. However, the model is more accurate than the model proposed by Phan et al. \cite{phan2022story}, which achieved an accuracy of 80\% on some projects. However, the model is more efficient than the model proposed by Phan et al., as the model is able to estimate the tickets much faster than a human, and therefore is more efficient.
+
+
 
 \begin{table}
 \centering
@@ -511,12 +549,12 @@ BertOverflow & 0.7103   & 0.7114 & 21 & 392 minute      \\
 \end{tblr}
 \caption{Confusion Matrix}\label{fig:confusion-matrix}
 \end{table}
-    The model was then tested on a different project, and the results are shown in table TODO: \par
-    The results show that the model does not perform well on a different project, and therefore the model may not generalise well to unseen data.
-    This is likely due to the fact that the model has been trained on a specific set of projects, and the project tested is for a plaform team, that mostly creates automations and cloud resources which is very different to the automotive projects in the training data .
+    The model was then tested on a different project. The project tested is for a plaform team, that mostly creates automations and cloud resources which is very different to the automotive projects in the training data.
+The model achieved a 44.2 \% accuracy on the project. For 3 classes, this is only marginally better than randomised guessing.
+    This shows that the model does not perform well on a different project, and therefore the model may not generalise well to unseen data that is unrelated to training data.
 
-    In order to compare the model to human estimation accuracy, I used the set of tickets that had been estimated with a specific time and that had an actual time documented to compare to.
-    I then placed the estimaed and actual time into the same catagories as for the model, small, medium and large.
+    To compare the model to human estimation accuracy, I used the set of tickets that had been estimated with a specific time and that had an actual time documented to compare to.
+    I then placed the estimated and actual time into the same catagories as for the model, small, medium and large.
     From this i was able to calculate the accuracy of the model, and the results show that the human accuracy is 0.77.
     This is 3-4\% higher than the model, however the model is able to estimate the tickets much faster than a human, and therefore is more efficient.
     Furthermore, as the model is trained on tickets throughout the entire history of the project, the model is able to estimate tickets that are similar to ones that have been estimated before, and therefore the model is able to learn from the history of the project, rather than just the tickets that have been estimated or worked on by the person, or people, estimating the tickets.
@@ -524,10 +562,10 @@ BertOverflow & 0.7103   & 0.7114 & 21 & 392 minute      \\
 
     \section{Ablation Study}
     In order to see how much the paraphrased data, custom loss function and data preprocessing helped the model, I removed each in turn, testing the model on the test set after each change and also the unseen data from a seperate project.
-    I trained the model on the original dataset without adding the paraphrased data. The aim of this is to see if the model performs better with the paraphrased data or if the paraphrasing is too different from the original data and it doesnt help, or if the data is too similar and overfits.
-    The results of these tests are shown in table TODO \par
 
-\begin{table}[]
+    The results of these tests are shown in table \ref{tab:accuracy-ablation} \par
+
+\begin{table}[h]
 \centering
 \begin{tabular}{ccc}
     \toprule
@@ -544,7 +582,7 @@ Original             & 0.7348  & 0.7358 \\
 
 \end{table}
 
-
+    I first trained the model on the original dataset without adding the paraphrased data. The aim of this is to see if the model performs better with the paraphrased data or if the paraphrasing is too different from the original data and it doesnt help, or if the data is too similar and overfits.
 
     The results show that the model performs better with the paraphrased data. This is likely because the paraphrased data allows the model to see more examples of different ways that tickets can be written, and therefore the model is able to generalise better to unseen data.
     I then trained the model on the original dataset without using Guassian Distribution as the label for cross entropy loss.  This is to see if the custom loss function helps the model to learn the sequential nature of the classes.
@@ -553,6 +591,7 @@ Original             & 0.7348  & 0.7358 \\
     I then trained the model on the original dataset without using the data cleaner. This is to see if the data cleaner helps the model to learn the context of the tickets, or if context is lost in the cleaning process.
     The results show that the model actually performed almost the same without the data cleaner. Although the datacleaner removes syntax and allows more of the text of the description to be used, which i expected to make a large affect on the accuracy, it may be that the model is able to learn from the syntax in relation to the context of the ticket.
     Further experiments could be done to see if the data cleaner is actually needed, or if the model can learn the context of the ticket without it given more fine tuning and potentially more data.
+
 
 
 
@@ -568,13 +607,56 @@ Original             & 0.7348  & 0.7358 \\
 
 
 
-    \chapter{Model as a Service}
-    \label{ch:model-as-a-service}
-    \subsection[Proposed User Experience]{Proposed User Experience}
+    \chapter{Practical Application}
+    \label{ch:practical-application}
+
+    In order to contextualise the model, in this section I have proposed a way that an organisation could use the model, and discussed how the model could be used in a software development team.
+    \section[Model as a service]{Model as a service}
+
+In order for an organisation to benefit from the model proposed, the model would need to be hosted as a service, and integrated into the organisations workflow. The model would need to be specific to an organisations projects, as the model would need to be trained on the organisations data in order to be able to estimate the size of the tickets. This would mean that the model would need to be trained on the organisations data, and then deployed as a service that the organisation could use to estimate the size of the tickets. An organisation may even need multiple models that are trained on different catagories of tickets, for example one model for frontend tickets, and one model for backend tickets. This would allow the model to be more accurate, as the model would be able to learn the context of the tickets better, and therefore be able to estimate the size of the tickets more accurately. As demonstrated with the testing of unseen tickets in an unrelated project, the model does not generalise well to unseen data that has a different topic, and therefore the model would need to be trained on subsets of the organisations data in order to be able to estimate the size of the tickets.
+
+    In practice, this would be done by the addition of a button in Jira that estimates the ticket via an automation.
+Once the user has input the title and description of the ticket, they would click the button, and the model would estimate the size of the ticket. A user would then be able to edit the description, and when ready, they would click the "Estimate" button, and the model would re-estimate the size of the ticket.
+    The model would need to be hosted, this could be done on a cloud service such as AWS, or on a local server. In AWS the model could be hosted on a SageMaker instance, which is a managed service that allows you to train and deploy machine learning models. This would allow the model to be easily scaled, and would also allow the model to be easily updated, as the model could be trained on new data and then deployed to the SageMaker instance.
+The cost of hosting the model would depend the amount of traffic that the model receives.
+    The model would also need to be trained on new data regularly, as the model would need to be updated to reflect the changes in the project. This would also increase the cost of hosting the model, as the model would need to be retrained on new data, and then deployed to the SageMaker instance.
+
+TODO: add a diagram of the cloud hosting?
+
+    \section[Use in a software development team]{Use in a software development team}
+    One proposed way that a team would use this model is during a planning poker session.
+    As previously discussed, planning poker is a technique used in agile software development to estimate the size of a user story or task.
+Planning poker often involves the team discussing the size of the ticket, and then voting on the size of the ticket.
+    The model could be used to give a pre-estimate of the ticket, and then the team could use this as an addition point for their discussion.
+It may also be beneficial to use the model to estimate the size of the ticket before the planning poker session and instead of outputting a single class, output a probability distribution over the classes. This would allow the team to see how confident the model is in its prediction, and therefore the team could use this as a guide to prioritise tickets where the model is less confident in its prediction, as these may require more in depth discussion.
+
+TODO: Add an image of the Jira interface with the button to estimate the ticket, and the output of the model.
 
 
     \chapter{Conclusion and further work}
     \label{ch:conclusion}
+
+    In this paper, I have proposed a model for the classification of software development tickets into 3 classes, small, medium and large.
+    The model uses a BERT model, and is trained on a dataset of 19,500 tickets from 7 projects.
+    The model is able to classify the tickets with an accuracy of 0.7348, and an F1 score of 0.7358.
+    This means that it is able to classify the tickets with an accuracy of 73.48\%. This is almost as accurate as a human, who has an accuracy of 77\%. In terms of usefulness, unfortunately the model does not generalise so well to tickets from projects it has never seen before. This is likely due to the fact that each project has its own way of writing tickets, different paces of work and different topics, and therefore the model is not able to predict the size of the ticket without seeing the projects tickets previously.
+    This means that this model would only be useful for particular projects with enough history to train the model, and therefore the model is not suitable to be used for new projects.
+
+    Another limitation of the model is that it has only been trained on text written in English. This means that the model is not able to classify tickets that are written in a different language, and therefore the model is not suitable for projects that are not written in English.
+    However, an option for further work would be to train the model on tickets written in different languages, and then use a language detection model to determine the language of the ticket, and then use the appropriate model to classify the ticket. Alternatively, one could use a model that is trained on multiple languages, such as mBERT, which is a multilingual version of BERT. This model is trained on 104 languages, and is able to understand the context of text in multiple languages \cite{devlin2018bert}. However, this model is much larger than the models used in this paper, and therefore would be more expensive to train and use.
+
+    A further limitation of the model is that it is not able to estimate the time that a ticket will take to complete, only the size of the ticket. An option for further work would be to train the model to predict the actual story point or time values rather than the size of the ticket. This would be more useful for the team, as they would be able to see how long a ticket will take to complete, rather than just the size of the ticket. This would be particularly useful for projects that have deadlines and releases to meet, as the team would be able to see how long each ticket will take to complete, and therefore be able to plan their work more effectively.
+
+    The model would be most beneficial to projects that have new team members, or team members that are not experienced in estimating tickets. This is because it can use the history of the project to estimate the size of the ticket, and therefore the team members can act as a sanity check in the estimation process. For example if a user estimates a ticket as small, but the model estimates it as large, the team may be more likely to investigate the ticket further, and therefore the model can be used as a tool to help the team estimate the tickets more accurately. This would be particularly useful for projects that have a large number of tickets, as the model could be used to give pre estimates before the ticket goes through the formal human estimation process, allowing the team to focus on estimating larger tickets if they have lots of spare capacity that requires larger tickets to be ready to implement, or smaller tickets if they have less capacity.
+
+
+
+
+
+
+
+
+
 
 \printbibliography
 
