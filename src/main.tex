@@ -386,12 +386,10 @@ Reflexive & Herself & Himself & Themselves \\
     These will be described sequentially in the following sections and is shown in figure \ref{fig:model-architecture}.\par
 
     \begin{figure}[h]
-        \includegraphics[width=\textwidth]{./figures/test2}
+        \includegraphics[width=\textwidth]{./figures/testmodel}
         \caption{Model Architecture}
         \label{fig:model-architecture}
     \end{figure}
-
-convert small.png -filter point -scale 10000% large.png
 
     \subsection{Tokenization Layer}\label[tokenization-layer]
     In order to be used in a Large Language Model, textual input needs to be transformed into tokens and embeddings.
@@ -425,7 +423,7 @@ convert small.png -filter point -scale 10000% large.png
     \end{figure}
 
 
-    \subsection[Transformer Layer]{sub:Transformer-Layer}
+    \subsection{Transformer Layer}\label{subsec:Transformer-Layer}
     The transformer layers are the core of the model, they are the part of the model that is responsible for understanding the context of the tokens.
     A transformer layer is a type of neural network architecture that is designed to process sequential data, such as text, and is based on the concept of attention.
     In a transformer layer, the input is passed through multiple layers of attention and feed forward neural networks.
@@ -433,7 +431,8 @@ convert small.png -filter point -scale 10000% large.png
     After obtaining contextualized representations through self-attention, the outputs are passed through a feed-forward neural network (FFN).
     This network applies linear transformations and non-linear activation functions to capture complex patterns and relationships within the representations.
     The FFN enables the model to distill and refine the contextual information obtained from self-attention, producing richer and more informative representations of the input sequence.
-    In this model, I have experimented with multiple pretrained BERT models that use the transformer architecture that have various benefits, including optimization of training time and size. \par
+    In the context of this model, I have experimented with multiple pretrained BERT models that use the transformer architecture that have various benefits, including optimization of training time and size.
+These are explained in more detail below. \par
     The pretrained model is then fine-tuned on the dataset, where it learns the specific context of the tickets in the dataset.
 
     \par
@@ -446,7 +445,7 @@ convert small.png -filter point -scale 10000% large.png
 
     \textbf{BERTOverflow: Code and Named Entity Recognition in StackOverflow}
     BERTOverflow is a BERT model that is pre-trained on a large corpus of 152 million sentences from StackOverflow, a question and answer website for programming questions~\cite{tabassum2020code}.
-    Although the architecture of this model is the same as the classic BERT model, the fine-tuning will enable the model to better understand the context of the text.
+    Although the architecture of this model is the same as the classic BERT model, the fine-tuning is expected to enable the model to better understand the context of the text.
     \par
 
     \textbf{DistilBERT: a distilled version of BERT: smaller, faster, cheaper and lighter}
@@ -465,7 +464,7 @@ convert small.png -filter point -scale 10000% large.png
     This is done by decomposing the large vocabulary embedding matrix into two smaller matrices~\cite{sanh2020distilbert}.
     \par
 
-    \subsection[classification-head]{Classification Head}
+    \subsection{Classification Head}\label{subsec:Classification-Head}
     The output of the transformer model is then passed into a fully connected layer.
     This maps the contextual embeddings that are output to predictions for each of the 3 classes in the classification task in question.
     This means that it transforms from a $1\times768$ sequence which is the output fromm a BERT model, to an output vector of dimension $1\times3$ by
