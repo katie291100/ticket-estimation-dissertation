@@ -12,6 +12,9 @@
  \usepackage{tabularray}
 \usepackage{graphicx}
 
+\let\oldenumerate\enumerate
+\let\endoldenumerate\endenumerate
+\renewenvironment{enumerate}{\oldenumerate\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}\setlength{\parsep}{0pt}}{\endoldenumerate}
 
 \acknowledgements{
   I would first like to thank my supervisor, Peter Nightingale, for his guidance and support throughout this project. \par
@@ -488,14 +491,13 @@ These are explained in more detail below. \par
     \section{Hyperparameters}\label{sec:hyperparameters}
     In order to decide on a learning rate and batch size, I performed a grid search.
     The grid search was performed on the base bert model, and the best parameters were chosen based on the testing accuracy.
-    Each combination of learning rate and batch size was trained for 20 epochs, and the best performing model was chosen.
-    The orginal bert paper suggests the following hyperparameters:
+    The original bert paper suggests the following hyperparameters:
     \begin{itemize}
         \item Batch size: 16, 32
         \item Learning rate (Adam): 5e-5, 3e-5, 2e-5
         \item Number of epochs: 2, 3, 4
     \end{itemize}
-
+    Each combination of learning rate and batch size was trained for 20 epochs, and the best performing model was chosen.
     However, Mosbach et al. researched the instability of fine tuning BERT and found that the number of epochs should be considerably higher and that using a small learning rate with bias correction helps to avoid vanishing gradients early in training, whereby the gradients become so small that the model stops learning~\cite{mosbach2021stability}.
     Therefore, I used the Adam optimizer to train the model, as this is the optimizer that is used in the original BERT paper and is also suggested in Mosbach et al.
     The learning rate also linearly increased for the first 10\% of steps, as suggested by Mosbach et al. again, to avoid vanishing gradients.
@@ -505,17 +507,18 @@ These are explained in more detail below. \par
     The model was trained on a NVIDIA RTX 4500, and took approximately 6 hours to train for 30 epochs. \par
 
     The model was trained on the training set, and then evaluated on the validation set.
-    The validation set was not used in the training of the model, and was used to compare models performance.
+    The training and validation set were explained further in section \ref{sec:preprocessing}.
     The model was evaluated using the accuracy metric, which is the number of correct predictions divided by the total number of predictions.
     It was also evaluated using the F1 score, which is the harmonic mean of precision and recall.
     Where precision is the number of true positives divided by the number of true positives and false positives, and recall is the number of true positives divided by the number of true positives and false negatives.
 
     To enable me to find the best model, I tested the model on the validation set after every epoch.
-    This meant that I didn't risk losing the best model if the model overfit the training data without being tested.
+    I then made a record of the results for each epoch and chose the model with the best accuracy and F1 score.
     As the number of epochs is much smaller than traditional neural networks, early stopping was not used.
     Particularly as I found the model to be quite stable, and the loss to decrease consistently over the 30 epochs.
 
-    I found that the model performed best with a batch size of 32, and a learning rate of 3e-5 at 20 epochs.
+    I found that the model performed best with a batch size of 32, and a learning rate of 3e-5.
+    It achieved a validation accuracy of 0.7330 and a F1 score of 0.7332 after 20 epochs.
 
     \chapter{Experimental Model Evaluation}
     \label{ch:experimental-model-evaluation}
@@ -523,7 +526,8 @@ These are explained in more detail below. \par
     The results of these experiments were used to decide whether there are any significant differences between the models, and which model is the best to use for the final model.
 
     \section{Accuracy evaluation}\label{sec:accuracy-evaluation}
-    All models were trained for 30 epochs, as despite the hyperparameter search finding the best accuracy at 20 epochs, I did not want to limit the epochs because time to train is more important to reduce cost than number of epochs. The best accuracy was taken after testing on every epoch and the results are displayed in ~\ref{tab:accuracy} and ~\ref{fig:accuracy}. \par
+    All models were trained for 30 epochs, as despite the hyperparameter search finding the best accuracy at 20 epochs, I did not want to limit the epochs because time to train is more important to reduce cost than number of epochs.
+    The best accuracy on the validation set was taken after testing on every epoch and the results are displayed in table~\ref{tab:accuracy} and figure ~\ref{fig:accuracy}. \par
 
 %    \setlength{\tabcolsep}{4ex}
     % increase row space
@@ -557,17 +561,21 @@ BertOverflow & 0.7103   & 0.7114 & 2 & 392 minute      \\
 
     The Bert-base-uncased model performed the best, followed by the Distilbert model.
     Distilbert was faster to train than the Bert-base-uncased model, taking 240 minutes to train for 25 epochs, compared to 380 to train for 20 epochs.
-    This would mean that the Distilbert model would be more cost effective to train, as it would take less time to train. However it is less accurate, so a trade-off would need to be made between accuracy and cost.
+    This would mean that the Distilbert model would be more cost effective to train, as it would take less time to train.
+    However it is less accurate, so a trade-off would need to be made between accuracy and cost.
+    Time to train is particularly important in the context of this project, as the model is likely to be retrained on a regular basis, as the data is regularly changing and more datapoints are being added.
+    Cost is also important, as the model is likely to be trained on a cloud service, and therefore the cost of training the model is likely to be high, and billed per minute.
 
     The Albert model performed the worst, with an accuracy of 0.7061, and a F1 score of 0.7075 and took the longest to train, at 464 minutes for 29 epochs.
     However the graph of the accuracy in figure~\ref{fig:accuracy-graph} shows that the models accuracy on the validation set was still increasing, and therefore it may have performed better with more epochs.
     The graph also shows that the BertOverflow models accuracy steadily decreased after 2 epochs, and therefore it is likely that the model was overfitting the training data, particularly as the loss value continued to get smaller.
+    However it appears that after 23 epochs, the accuracy starts to increase again, suggesting that the model may have started to generalise more effectively and may have continued increasing in accuracy if trained for longer.
      \par
 
 \begin{figure}[h]
     \centering
 
-        \includegraphics[width=12cm]{./figures/accurach-epochs}
+        \includegraphics[width=10cm]{./figures/accurach-epochs}
         \caption{Graph showing the accuracy of the models over the number of epochs on the validation set}
         \label{fig:accuracy-graph}
     \end{figure}
@@ -581,7 +589,7 @@ BertOverflow & 0.7103   & 0.7114 & 2 & 392 minute      \\
 
 
     \section{Results}\label{sec:results}
-The final model was trained on the entire dataset, and then tested on the test set.
+    The final model was trained on the entire dataset, and then tested on the test set.
     This test set was not used in the training of the model but is from the same projects, and therefore is a good representation of how the model will perform on unseen but related data.
     I then tested it on a set of tickets from a different project, to see how well it generalised to unseen data that is more likely to be different from the training data.
 
@@ -593,9 +601,9 @@ The final model was trained on the entire dataset, and then tested on the test s
     The confusion matrix in table~\ref{fig:confusion-matrix} shows that the model is able to capture the sequential nature of the classes, as the model is more likely to predict a ticket as a class that is closer to the actual class.
     This is shown by the fact that the model is more likely to incorrectly predict a small ticket (0) as being a medium ticket (1) than a large ticket (2).
 
-    In terms of where it fits in the literature, the model is more accurate than the model proposed by Choetkiertikul et al. \cite{8255666}, which classifies tickets up to 71\% accuracy. However, the model is more accurate than the model proposed by Phan et al. \cite{phan2022story}, which achieved an accuracy of 80\% on some projects. However, the model is more efficient than the model proposed by Phan et al., as the model is able to estimate the tickets much faster than a human, and therefore is more efficient.
-
-
+    In terms of where it fits in the literature, the model is more accurate than the model proposed by Choetkiertikul et al. \cite{8255666} however Choetkiertikul uses a Standardised Accuracy score because it estimates a specific value rather than a class, as desscribed in section \ref{sec:estimation-with-deep-learning}, which classifies tickets up to 71\% accuracy.
+    A more relevant comparison is with the model proposed by Phan et al. \cite{phan2022story}, which achieved an average accuracy of 78.63\% over all the projects in their dataset, when classifying tickets into 4 classes.
+    This is higher than the model proposed in this paper, however the model in this paper is is shown to be effective at classifying tickets across multiple projects in a company rather than just a single project per company, so therefore may generalise better.
 
 \begin{table}
 \centering
@@ -614,7 +622,7 @@ The final model was trained on the entire dataset, and then tested on the test s
                                             & 1                & 207 & 753 & 192 \\
                                             & 2                & 34  & 218 & 541
 \end{tblr}
-\caption{Confusion Matrix}\label{fig:confusion-matrix}
+\caption{Confusion Matrix for final model on test set.}\label{fig:confusion-matrix}
 \end{table}
     The model was then tested on a different project. The project tested is for a plaform team, that mostly creates automations and cloud resources which is very different to the automotive projects in the training data.
 The model achieved a 44.2 \% accuracy on the project. For 3 classes, this is only marginally better than randomised guessing.
